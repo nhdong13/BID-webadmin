@@ -35,10 +35,14 @@ const Typography = React.lazy(() => import('./views/Theme/Typography'));
 const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
+const configIndex = React.lazy(() => import('./views/Configuration/index'));
+const requestIndex = React.lazy(() => import('./views/SittingRequest/index'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
+  { path: '/configIndex', name: 'Configuration', component: configIndex },
+  { path: '/requestIndex', name: 'Sitting Management', component: requestIndex },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
