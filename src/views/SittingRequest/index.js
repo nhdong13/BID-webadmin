@@ -196,7 +196,7 @@ class SittingRequest extends Component {
                         </td>
                         <td>{item.user.nickname}</td>
                         <td>
-                          {item.bsitter.nickname
+                          {item.bsitter
                             ? item.bsitter.nickname
                             : 'N/A'}
                         </td>
