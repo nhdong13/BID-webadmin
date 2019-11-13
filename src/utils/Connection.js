@@ -1,4 +1,4 @@
-const url = `http://172.20.10.5:5000/api/v1`;
+const url = `http://192.168.43.205:5000/api/v1`;
 const apiUrl = {
   baseUrl: `${url}/`,
   login: `${url}/auth/login`,

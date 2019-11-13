@@ -14,17 +14,17 @@ class SittingRequest extends Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const header = [
       'Sitting ID',
       'Sitting Date',
       'Start time',
       'End time',
+      'Created User',
+      'Babysitter',
       'Address',
       'Price',
       'Status',
-      'Created User',
-      'Babysitter',
     ];
     this.setState({headers: header});
     this.refresher();
@@ -34,45 +34,7 @@ class SittingRequest extends Component {
   refresher(){
     setInterval(() =>
     Api.get('sittingRequests/all').then((res) => {
-      if (res) {
-        let requests = [];
-        res.map((item) => {
-          let temp = {};
-          for (var key in item) {
-            if (key == 'id') temp[key] = item[key];
-            if (key == 'sittingDate')
-              temp[key] = moment(item[key]).format('DD-MM-YYYY');
-            if (key == 'startTime')
-              temp[key] = moment(item[key], [moment.ISO_8601, 'HH:mm']).format(
-                'HH:mm',
-              );
-            if (key == 'endTime')
-              temp[key] = moment(item[key], [moment.ISO_8601, 'HH:mm']).format(
-                'HH:mm',
-              );
-            if (key == 'sittingAddress') temp[key] = item[key];
-            if (key == 'totalPrice') temp[key] = formater(item[key]);
-            if (key == 'user' && item[key] != null)
-              temp[key] = item[key]['nickname'];
-            if (key == 'bsitter')
-              item[key] == null
-                ? (temp[key] = 'N/A')
-                : (temp[key] = item[key]['nickname']);
-            if (key == 'status') temp[key] = item[key];
-          }
-          // console.log(temp);
-          const newItem = Object.values(temp);
-          // const newItem = Object.values(item);
-          // newItem.splice(9, 2);
-          // console.log("PHUC: TableList -> newItem", newItem)
-          requests.push(newItem);
-        });
-        if (requests.length > 0) {
-          // console.log('PHUC: TableList -> requests', requests);
-          this.setState({requests : requests});
-          console.log(requests)
-        }
-      }
+      this.setState({requests : res});
     }), 1000);
   }
 
@@ -101,9 +63,17 @@ class SittingRequest extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.requests.map((item, row) =>
-                    <tr key={row}>{item.map((child, index) => 
-                    <td key={(index + 1) + (row * 100)}>{child}</td>)}
+                  {this.state.requests.map((item, index) =>
+                    <tr key={index}>
+                    <td>{item.id}</td>
+                    <td>{moment(item.sittingDate).format('DD-MM-YYYY')}</td>
+                    <td>{moment(item.startTime, [moment.ISO_8601, 'HH:mm']).format('HH:mm')}</td>
+                    <td>{moment(item.endTime, [moment.ISO_8601, 'HH:mm']).format('HH:mm')}</td>
+                    <td>{item.user.nickname}</td>
+                    <td>{(item.bsitter.nickname) ? item.bsitter.nickname : 'N/A'}</td>
+                    <td>{item.sittingAddress}</td>
+                    <td>{formater(item.totalPrice)}</td>
+                    <td><p style={{color: (this.textColorByStatus(item.status))}}>{item.status}</p></td>
                     </tr>    
                   )}
                 </tbody>
