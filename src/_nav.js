@@ -1,13 +1,30 @@
 export default {
   items: [
     {
-      name: 'Configuration',
-      url: '/configIndex',
+      name: 'Sitting Request Management',
+      url: '/requestIndex',
       icon: 'icon-settings',
     },
     {
-      name: 'Sitting Request Management',
-      url: '/requestIndex',
+      name: 'Users management',
+      url: '',
+      icon: 'icon-cursor',
+      children: [
+        {
+          name: 'Parents Management',
+          url: '/parentIndex',
+          icon: 'icon-settings',
+        },
+        {
+          name: 'Babysitters Management',
+          url: '/bsitterIndex',
+          icon: 'icon-settings',
+        },
+      ],
+    },
+    {
+      name: 'Configuration',
+      url: '/configIndex',
       icon: 'icon-settings',
     },
     // {
