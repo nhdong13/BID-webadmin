@@ -18,6 +18,7 @@ import Api from '../../api/api_helper';
 import moment from 'moment';
 import { formater } from '../../utils/MoneyFormater';
 import colors from '../../assets/Color';
+import { thisExpression } from '@babel/types';
 
 class SittingRequest extends Component {
   constructor(props) {
@@ -155,11 +156,16 @@ class SittingRequest extends Component {
 
   openDropDown = (id) => {
     // console.log(event.target.innerText)
-    this.setState({
+    if (this.state.open == null)
+    {this.setState({
       open: id.id,
       editAddress: null,
       status: id.status
-    });
+    });} else {
+      this.setState({
+        open: null,
+      })
+    }
   };
 
   render() {

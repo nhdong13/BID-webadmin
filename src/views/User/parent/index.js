@@ -170,12 +170,17 @@ class Users extends Component {
 
   openDropDown = (id) => {
     // console.log(event.target.innerText)
-    this.setState({
+    if (this.state.open == null)
+    {this.setState({
       open: id,
       editAddress: null,
       editPhone: null,
       editEmail: null,
-    });
+    });} else {
+      this.setState({
+        open: null,
+      })
+    }
   };
 
   render() {
