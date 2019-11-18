@@ -31,6 +31,7 @@ class Users extends Component {
       editAddress: null,
       editPhone: null,
       editEmail: null,
+      key: '',
     };
   }
 
@@ -51,7 +52,9 @@ class Users extends Component {
     let result = [];
     if (this.state.users) {
       this.state.users.map((item) => {
-        if (item.roleId == 2) result.push(item);
+        if (item.roleId == 2) 
+        if(item.id == this.state.key || this.state.key == '')
+          result.push(item);
       });
     }
     return result;
@@ -73,6 +76,11 @@ class Users extends Component {
     if (event.target.id == "phonenumber") this.setState({editPhone: event.target.value});
     if (event.target.id == "email") this.setState({editEmail: event.target.value});
     if (event.target.id == "address") this.setState({editAddress: event.target.value});
+  }
+
+  handleSearchInput = (event) => {
+    // console.log(event.target.value);
+    this.setState({key: event.target.value});
   }
 
   openList(item) {
@@ -187,6 +195,23 @@ class Users extends Component {
     return (
       <Row>
         <Col xs="12" lg="12">
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Search by UserID</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Enter user id"
+                onChange={this.handleSearchInput}
+              />
+              <InputGroupAddon addonType="append">
+                <InputGroupText>
+                  <i className="fa fa-asterisk"></i>
+                </InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+          </FormGroup>
+
           <Card>
             <CardBody>
               <Table responsive hover>

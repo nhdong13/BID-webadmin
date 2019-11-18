@@ -14,6 +14,7 @@ class Users extends Component {
     this.state = {
       users: [],
       headers: [],
+      key: '',
     };
   }
 
@@ -25,7 +26,6 @@ class Users extends Component {
       'Avg. Rating',
       'Total feedback',
       'Address',
-      'More detail',
     ];
     this.setState({headers: header});
     this.refresher();
@@ -43,7 +43,9 @@ class Users extends Component {
     let result = [];
     if (this.state.users){
     this.state.users.map(item => {
-      if (item.roleId == 3) result.push(item);
+      if (item.roleId == 3) 
+      if(item.id == this.state.key || this.state.key == '')
+        result.push(item);
     })}
     return result;
   }
@@ -64,6 +66,11 @@ class Users extends Component {
     if (event.target.id == "phonenumber") this.setState({editPhone: event.target.value});
     if (event.target.id == "email") this.setState({editEmail: event.target.value});
     if (event.target.id == "address") this.setState({editAddress: event.target.value});
+  }
+
+  handleSearchInput = (event) => {
+    // console.log(event.target.value);
+    this.setState({key: event.target.value});
   }
 
   openList(item) {
@@ -126,6 +133,42 @@ class Users extends Component {
               </InputGroup>
             </FormGroup>
 
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Weekly Schedule</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  id="address"
+                  placeholder={item.babysitter.weeklySchedule}
+                  onChange={this.handleInputPress}
+                />
+                <InputGroupAddon addonType="append">
+                  <InputGroupText>
+                    <i className="fa fa-asterisk"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Working time</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  id="address"
+                  placeholder={item.babysitter.daytime + 'h to ' + item.babysitter.evening + 'h'}
+                  onChange={this.handleInputPress}
+                />
+                <InputGroupAddon addonType="append">
+                  <InputGroupText>
+                    <i className="fa fa-asterisk"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+            </FormGroup>
+
             <FormGroup className="form-actions">
               <Button type="submit" size="sm" color="primary" onClick={() => this.saveUserInfo(item.id)}>
                 Save
@@ -156,6 +199,24 @@ class Users extends Component {
     return (
       <Row>
         <Col xs="12" lg="12">
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Search by UserID</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Enter user id"
+              onChange={this.handleSearchInput}
+            />
+            <InputGroupAddon addonType="append">
+              <InputGroupText>
+                <i className="fa fa-asterisk"></i>
+              </InputGroupText>
+            </InputGroupAddon>
+          </InputGroup>
+        </FormGroup>
+
           <Card>
             <CardBody>
               <Table responsive hover>

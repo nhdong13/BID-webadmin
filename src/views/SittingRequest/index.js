@@ -30,6 +30,7 @@ class SittingRequest extends Component {
       status: '',
       isOpen: false,
       editAddress: null,
+      key: '',
     };
   }
 
@@ -84,6 +85,11 @@ class SittingRequest extends Component {
     if (event.target.id == 'address')
       this.setState({ editAddress: event.target.value });
   };
+
+  handleSearchInput = (event) => {
+    // console.log(event.target.value.indexOf('an'));
+    this.setState({key: event.target.value});
+  }
 
   toggleDropdown = (event) => {
     this.setState({isOpen: !this.state.isOpen});
@@ -168,10 +174,38 @@ class SittingRequest extends Component {
     }
   };
 
+  searchFilter(){
+    let result = [];
+    if (this.state.requests){
+    this.state.requests.map(item => {
+      if(item.sittingAddress.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1 || this.state.key == '')
+        result.push(item);
+    })}
+    return result;
+  }
+
   render() {
     return (
       <Row>
         <Col xs="12" lg="12">
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Search by Address</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Enter sitting address"
+                onChange={this.handleSearchInput}
+              />
+              <InputGroupAddon addonType="append">
+                <InputGroupText>
+                  <i className="fa fa-asterisk"></i>
+                </InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+          </FormGroup>
+
           <Card>
             <CardBody>
               <Table responsive hover>
@@ -183,7 +217,7 @@ class SittingRequest extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.requests.map((item, index) => (
+                  {this.searchFilter().map((item, index) => (
                     <React.Fragment key={index}>
                       <tr onClick={() => this.openDropDown(item)}>
                         <td>{item.id}</td>
