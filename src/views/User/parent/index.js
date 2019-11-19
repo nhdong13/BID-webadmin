@@ -15,6 +15,7 @@ import {
   Button,
 } from 'reactstrap';
 import Api, { apiConfig } from '../../../api/api_helper';
+import Popup from 'reactjs-popup';
 
 class Users extends Component {
   constructor(props) {
@@ -27,6 +28,7 @@ class Users extends Component {
         'Phone number',
         'Number of children',
         'Address',
+        ''
       ],
       editAddress: null,
       editPhone: null,
@@ -83,11 +85,168 @@ class Users extends Component {
     this.setState({key: event.target.value});
   }
 
-  openList(item) {
+  
+
+  openDropDown = (id) => {
+    // console.log(event.target.innerText)
+    if (this.state.open == null)
+    {this.setState({
+      open: id,
+      editAddress: null,
+      editPhone: null,
+      editEmail: null,
+    });} else {
+      this.setState({
+        open: null,
+      })
+    }
+  };
+
+  render() {
+    return (
+      <Row>
+        <Col xs="12" lg="12">
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Search by UserID</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Enter user id"
+                onChange={this.handleSearchInput}
+              />
+              <InputGroupAddon addonType="append">
+                <InputGroupText>
+                  <i className="fa fa-asterisk"></i>
+                </InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+          </FormGroup>
+
+          <Card>
+            <CardBody>
+              <Table responsive hover>
+                <thead>
+                  <tr>
+                    {this.state.headers.map((item, index) => (
+                      <th key={index}>{item}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.parentFilter().map((item, index) => (
+                    <React.Fragment key={index}>
+                      <tr onClick={() => this.openDropDown(item.id)}>
+                        <td>{item.id}</td>
+                        <td>{item.nickname}</td>
+                        <td>{item.phoneNumber}</td>
+                        <td>
+                          {item.parent.children[0]
+                            ? item.parent.children.length
+                            : 'N/A'}
+                        </td>
+                        <td>{item.address}</td>
+                        <td>
+                        <Popup trigger={<button className="btn btn-pill btn-block btn-info">Edit</button>} modal>
+                        {this.openList(item)}
+                        </Popup>
+                        </td>
+                      </tr>
+                      {item.id == this.state.open ? this.openListView(item) : null}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </Table>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+    );
+  }
+
+  openListView(item){
     return (
       <tr>
         <td align="center" colSpan="100%">
-            
+        <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText style={({width:300})}><b>Phone Number</b></InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText style={({width:500})}>{item.phoneNumber}</InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="append">
+                  <InputGroupText>
+                    <i className="fa fa-user"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText style={({width:300})}><b>Email</b></InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText style={({width:500})}>{item.email}</InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="append">
+                  <InputGroupText>
+                    <i className="fa fa-envelope"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText style={({width:300})}><b>Address</b></InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText style={({width:500})}>{item.address}</InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="append">
+                  <InputGroupText>
+                    <i className="fa fa-asterisk"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+            </FormGroup>
+            <FormGroup>
+              <InputGroup>
+                  <b>All children({item.parent.children.length})</b>
+                </InputGroup></FormGroup>
+
+            {(item.parent.children.length > 0) ? 
+            item.parent.children.map(child => 
+            <FormGroup key={child.id}>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>{child.name}</InputGroupText>
+                </InputGroupAddon>
+                <InputGroupText>
+                  <img src={child.image } width="50" height="50"/>
+                </InputGroupText>
+                <InputGroupAddon addonType="append">
+                  <InputGroupText>
+                    <i className="fa fa-asterisk"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+            </FormGroup>)
+            : <FormGroup>No children added</FormGroup>}
+        </td>
+      </tr>
+    );
+  }
+
+  openList(item) {
+    return (
+      <div style={({margin:50, paddingTop:50})}>
+        <h1>{item.nickname}</h1>
             <FormGroup>
               <InputGroup>
                 <InputGroupAddon addonType="prepend">
@@ -166,87 +325,15 @@ class Users extends Component {
             </FormGroup>)
             : <FormGroup>No children added</FormGroup>}
 
-            <FormGroup className="form-actions">
-              <Button type="submit" size="sm" color="primary" onClick={() => this.saveUserInfo(item.id)}>
+            <FormGroup className="form-actions" align="center">
+              <Button type="submit" size="lg" color="primary" 
+                onClick={() => {if(window.confirm('Are you sure?')){this.saveUserInfo(item.id)};}}>
                 Save
               </Button>
             </FormGroup>
-        </td>
-      </tr>
+        </div>
     );
   };
-
-  openDropDown = (id) => {
-    // console.log(event.target.innerText)
-    if (this.state.open == null)
-    {this.setState({
-      open: id,
-      editAddress: null,
-      editPhone: null,
-      editEmail: null,
-    });} else {
-      this.setState({
-        open: null,
-      })
-    }
-  };
-
-  render() {
-    return (
-      <Row>
-        <Col xs="12" lg="12">
-          <FormGroup>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>Search by UserID</InputGroupText>
-              </InputGroupAddon>
-              <Input
-                placeholder="Enter user id"
-                onChange={this.handleSearchInput}
-              />
-              <InputGroupAddon addonType="append">
-                <InputGroupText>
-                  <i className="fa fa-asterisk"></i>
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
-          </FormGroup>
-
-          <Card>
-            <CardBody>
-              <Table responsive hover>
-                <thead>
-                  <tr>
-                    {this.state.headers.map((item, index) => (
-                      <th key={index}>{item}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.parentFilter().map((item, index) => (
-                    <React.Fragment key={index}>
-                      <tr onClick={() => this.openDropDown(item.id)}>
-                        <td>{item.id}</td>
-                        <td>{item.nickname}</td>
-                        <td>{item.phoneNumber}</td>
-                        <td>
-                          {item.parent.children[0]
-                            ? item.parent.children.length
-                            : 'N/A'}
-                        </td>
-                        <td>{item.address}</td>
-                      </tr>
-                      {item.id == this.state.open ? this.openList(item) : null}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </Table>
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
-    );
-  }
 }
 
 export default Users;

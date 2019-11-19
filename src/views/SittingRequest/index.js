@@ -241,7 +241,7 @@ class SittingRequest extends Component {
                             : 'N/A'}
                         </td>
                         <td>{item.sittingAddress}</td>
-                        <td>{formater(item.totalPrice)}</td>
+                        <td>{formater(item.totalPrice)} VNĐ</td>
                         <td>
                           <b
                             style={{

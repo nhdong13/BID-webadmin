@@ -86,7 +86,7 @@ class Configuration extends Component {
                 </thead>
                 <tbody>
                   {this.state.configurations.map((item, row) =>
-                    <tr key={row}>{item.map((child, index) => 
+                    <tr key={row}style={({width:500})}>{item.map((child, index) => 
                     <td key={(index + 1) + (row * 100)}>{formater(child)}</td>)}
                     </tr>    
                   )}
