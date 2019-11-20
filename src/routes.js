@@ -36,15 +36,19 @@ const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 const configIndex = React.lazy(() => import('./views/Configuration/index'));
+const timesetting = React.lazy(() => import('./views/Configuration/time_setting'));
 const requestIndex = React.lazy(() => import('./views/SittingRequest/index'));
 const parentIndex = React.lazy(() => import('./views/User/parent/index'));
 const bsitterIndex = React.lazy(() => import('./views/User/babysitter/index'));
+const invitationIndex = React.lazy(() => import('./views/Invitations/index'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/configIndex', name: 'Configuration', component: configIndex },
+  { path: '/timesetting', name: 'Time Setting', component: timesetting },
   { path: '/requestIndex', name: 'Sitting Management', component: requestIndex },
+  { path: '/invitations', name: 'Invitation Management', component: invitationIndex },
   { path: '/parentIndex', name: 'Parents Management', component: parentIndex },
   { path: '/bsitterIndex', name: 'Babysitters Management', component: bsitterIndex },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },

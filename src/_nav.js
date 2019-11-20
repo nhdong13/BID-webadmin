@@ -6,6 +6,16 @@ export default {
       icon: 'icon-settings',
     },
     {
+      name: 'Invitation Management',
+      url: '/invitations',
+      icon: 'icon-settings',
+    },
+    {
+      name: 'Time Setting',
+      url: '/timesetting',
+      icon: 'icon-settings',
+    },
+    {
       name: 'Users management',
       url: '',
       icon: 'icon-cursor',
