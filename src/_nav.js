@@ -30,6 +30,11 @@ export default {
           url: '/bsitterIndex',
           icon: 'icon-settings',
         },
+        // {
+        //   name: 'Register',
+        //   url: '/registeruser',
+        //   icon: 'icon-settings',
+        // },
       ],
     },
     {

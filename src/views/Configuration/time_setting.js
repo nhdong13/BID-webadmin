@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Card, CardBody, Col, Row, Table, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
+import { Card, CardBody, Col, Row, Table, FormGroup, InputGroup, InputGroupAddon, 
+  InputGroupText, Input, Button, Jumbotron } from 'reactstrap';
 import Api from '../../api/api_helper';
 import moment from 'moment';
 import { formater } from '../../utils/MoneyFormater';
@@ -24,22 +25,30 @@ class Configuration extends Component {
 
   render() {
     return (
-      <FormGroup>
+      <Card style={({alignItems: "left"})}><CardBody>
+      <Jumbotron>
+      <h1>Time Configuration</h1>
+      <hr className="my-2" />
+      <FormGroup style={({marginTop: 30})}>
         <InputGroup>
           <InputGroupAddon addonType="prepend">
             <InputGroupText>Time</InputGroupText>
           </InputGroupAddon>
           <Input
-            placeholder="Enter user id"
+            placeholder="input time to change the system clock"
             onChange={this.handleSearchInput}
           />
           <InputGroupAddon addonType="append">
-            <InputGroupText>
-              <i className="fa fa-asterisk" onClick={() => this.submit()}></i>
-            </InputGroupText>
+            <Button type="submit" size="md" color="primary" 
+              onClick={() => {if(window.confirm('Are you sure?')){this.submit()};}}>
+              Save
+            </Button>
           </InputGroupAddon>
         </InputGroup>
+        <p style={({marginTop: 30})}>Ex: 2015-11-10 07:59:45</p>
       </FormGroup>
+      </Jumbotron>
+      </CardBody></Card>
     );
   }
 }

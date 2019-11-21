@@ -41,11 +41,13 @@ const requestIndex = React.lazy(() => import('./views/SittingRequest/index'));
 const parentIndex = React.lazy(() => import('./views/User/parent/index'));
 const bsitterIndex = React.lazy(() => import('./views/User/babysitter/index'));
 const invitationIndex = React.lazy(() => import('./views/Invitations/index'));
+const register = React.lazy(() => import('./views/User/register_account'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/configIndex', name: 'Configuration', component: configIndex },
+  { path: '/registeruser', name: 'Register', component: register },
   { path: '/timesetting', name: 'Time Setting', component: timesetting },
   { path: '/requestIndex', name: 'Sitting Management', component: requestIndex },
   { path: '/invitations', name: 'Invitation Management', component: invitationIndex },
