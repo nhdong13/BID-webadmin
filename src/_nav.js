@@ -11,6 +11,11 @@ export default {
       icon: 'icon-settings',
     },
     {
+      name: 'System Setting',
+      url: '/systemsetting',
+      icon: 'icon-settings',
+    },
+    {
       name: 'Time Setting',
       url: '/timesetting',
       icon: 'icon-settings',
@@ -30,11 +35,11 @@ export default {
           url: '/bsitterIndex',
           icon: 'icon-settings',
         },
-        // {
-        //   name: 'Register',
-        //   url: '/registeruser',
-        //   icon: 'icon-settings',
-        // },
+        {
+          name: 'Register',
+          url: '/registeruser',
+          icon: 'icon-settings',
+        },
       ],
     },
     {

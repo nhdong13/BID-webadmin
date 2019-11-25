@@ -20,6 +20,8 @@
     "chart.js": "^2.9.2",
     "classnames": "^2.2.6",
     "core-js": "^3.3.6",
+    "docx-extractor": "^1.1.5",
+    "doxtract": "^1.0.13",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "flag-icon-css": "^3.4.5",
@@ -35,7 +37,9 @@
     "react-test-renderer": "^16.11.0",
     "reactjs-popup": "^1.5.0",
     "reactstrap": "^8.1.1",
-    "simple-line-icons": "^2.4.1"
+    "simple-line-icons": "^2.4.1",
+    "textract": "^2.5.0",
+    "word-extractor": "^0.3.0"
   },
   "devDependencies": {
     "react-scripts": "^3.2.0"
