@@ -24,7 +24,7 @@ class Configuration extends Component {
   }
 
   componentWillMount(){
-    Api.post('/configuration/systemsetting',null).then((res) => 
+    Api.post('configuration/systemsetting',null).then((res) => 
     this.setState({
       remindBeforeDuration_0: res.remindBeforeDuration_0,
       remindBeforeDuration_1: res.remindBeforeDuration_1,
