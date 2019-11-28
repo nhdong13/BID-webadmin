@@ -28,6 +28,7 @@ class Users extends Component {
         'Phone number',
         'Number of children',
         'Address',
+        'Status',
         ''
       ],
       editAddress: null,
@@ -73,6 +74,13 @@ class Users extends Component {
       window.location.reload(false);
     });
   }
+
+  banAccount = (item) => {
+    let info = {active: !item.active};
+    Api.put('users/' + item.id, info).then((res) => {
+      window.location.reload(false);
+    });
+  };
   
   handleInputPress = (event) => {
     if (event.target.id == "phonenumber") this.setState({editPhone: event.target.value});
@@ -146,6 +154,8 @@ class Users extends Component {
                             : 'N/A'}
                         </td>
                         <td>{item.address}</td>
+                        <td>{item.active ? <b style={({color: 'green'})}>Active</b> 
+                        : <b style={({color: 'red'})}>Banned</b>}</td>
                         <td>
                         <Popup trigger={<button className="btn btn-pill btn-block btn-info">Edit</button>} modal>
                         {this.openList(item)}
@@ -330,6 +340,21 @@ class Users extends Component {
                 onClick={() => {if(window.confirm('Are you sure?')){this.saveUserInfo(item.id)};}}>
                 Save
               </Button>
+              {item.active ? 
+              <Button
+                  type="submit"
+                  size="lg"
+                  style={({margin: 30})}
+                  color="danger"
+                  onClick={() => {if(window.confirm('Are you sure?')){this.banAccount(item)};}}
+              >Ban this account</Button>
+                : <Button
+                type="submit"
+                size="lg"
+                style={({margin: 30})}
+                color="danger"
+                onClick={() => {if(window.confirm('Are you sure?')){this.banAccount(item)};}}
+              >Unlock this account</Button>}
             </FormGroup>
         </div>
     );

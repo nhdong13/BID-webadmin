@@ -36,6 +36,7 @@ class Users extends Component {
       'Total feedback',
       'Worktime',
       'Address',
+      'Status',
       ''
     ];
     this.setState({ headers: header });
@@ -73,6 +74,14 @@ class Users extends Component {
       window.location.reload(false);
     });
   };
+
+  banAccount = (item) => {
+    let info = {active: !item.active};
+    Api.put('users/' + item.id, info).then((res) => {
+      window.location.reload(false);
+    });
+  };
+  
 
   handleInputPress = (event) => {
     if (event.target.id == 'phonenumber')
@@ -165,6 +174,8 @@ class Users extends Component {
                           'h'
                         }</td>
                         <td>{item.address}</td>
+                        <td>{item.active ? <b style={({color: 'green'})}>Active</b> 
+                        : <b style={({color: 'red'})}>Banned</b>}</td>
                         <td>
                         <Popup trigger={<button className="btn btn-pill btn-block btn-info">Edit</button>} modal>
                         {this.openList(item)}
@@ -365,12 +376,17 @@ class Users extends Component {
               </InputGroupAddon>
               <Input
                 id="address"
-                placeholder={
+                placeholder={item.babysitter.daytime[3] == item.babysitter.evening[0] && 
+                  item.babysitter.daytime[4] == item.babysitter.evening[1] ?
+                  item.babysitter.daytime[0] + item.babysitter.daytime[1] +
+                    'h to ' +
+                    item.babysitter.evening[3] + item.babysitter.evening[4] +
+                    'h' : 
                   item.babysitter.daytime +
-                  'h to ' +
-                  item.babysitter.evening +
-                  'h'
-                }
+                    'h to ' +
+                    item.babysitter.evening +
+                    'h'
+                  }
                 onChange={this.handleInputPress}
               />
               <InputGroupAddon addonType="append">
@@ -390,6 +406,25 @@ class Users extends Component {
             >
               Save
             </Button>
+            {item.active ? 
+            <Button
+              type="submit"
+              size="lg"
+              style={({margin: 30})}
+              color="danger"
+              onClick={() => {if(window.confirm('Are you sure?')){this.banAccount(item)};}}
+            >
+              Ban this account
+            </Button>
+            : <Button
+            type="submit"
+            size="lg"
+            style={({margin: 30})}
+            color="danger"
+            onClick={() => {if(window.confirm('Are you sure?')){this.banAccount(item)};}}
+          >
+            Unlock this account
+          </Button>}
           </FormGroup>
         </div>
     );
