@@ -46,7 +46,7 @@ const register = React.lazy(() => import('./views/User/register_account'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
+  // { path: '/', exact: true, name: 'Home' },
   { path: '/configIndex', name: 'Configuration', component: configIndex },
   { path: '/systemsetting', name: 'System Setting', component: systemsetting },
   { path: '/registeruser', name: 'Register', component: register },
