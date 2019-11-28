@@ -34,6 +34,7 @@ class Users extends Component {
       'Phone number',
       'Avg. Rating',
       'Total feedback',
+      'Worktime',
       'Address',
       ''
     ];
@@ -151,6 +152,18 @@ class Users extends Component {
                             ? item.babysitter.totalFeedback
                             : 'N/A'}
                         </td>
+                        <td>{item.babysitter.weeklySchedule} <br/>
+                        {item.babysitter.daytime[3] == item.babysitter.evening[0] && 
+                        item.babysitter.daytime[4] == item.babysitter.evening[1] ?
+                        item.babysitter.daytime[0] + item.babysitter.daytime[1] +
+                          'h to ' +
+                          item.babysitter.evening[3] + item.babysitter.evening[4] +
+                          'h' : 
+                        item.babysitter.daytime +
+                          'h to ' +
+                          item.babysitter.evening +
+                          'h'
+                        }</td>
                         <td>{item.address}</td>
                         <td>
                         <Popup trigger={<button className="btn btn-pill btn-block btn-info">Edit</button>} modal>
@@ -244,12 +257,17 @@ class Users extends Component {
                 <InputGroupText style={({width:300})}><b>Working time</b></InputGroupText>
               </InputGroupAddon>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>{
-                  item.babysitter.daytime +
-                  'h to ' +
-                  item.babysitter.evening +
-                  'h'
-                }</InputGroupText>
+                <InputGroupText>{item.babysitter.daytime[3] == item.babysitter.evening[0] && 
+                        item.babysitter.daytime[4] == item.babysitter.evening[1] ?
+                        item.babysitter.daytime[0] + item.babysitter.daytime[1] +
+                          'h to ' +
+                          item.babysitter.evening[3] + item.babysitter.evening[4] +
+                          'h' : 
+                        item.babysitter.daytime +
+                          'h to ' +
+                          item.babysitter.evening +
+                          'h'
+                        }</InputGroupText>
               </InputGroupAddon>
               <InputGroupAddon addonType="append">
                 <InputGroupText>
