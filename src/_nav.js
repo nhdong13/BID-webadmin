@@ -42,11 +42,11 @@ export default {
         },
       ],
     },
-    {
-      name: 'Configuration',
-      url: '/configIndex',
-      icon: 'icon-settings',
-    },
+    // {
+    //   name: 'Configuration',
+    //   url: '/configIndex',
+    //   icon: 'icon-settings',
+    // },
     // {
     //   name: 'Dashboard',
     //   url: '/dashboard',
