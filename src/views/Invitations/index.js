@@ -71,7 +71,7 @@ class SittingRequest extends Component {
     info.id = item;
     info.status = this.state.status;
     if (this.state.editAddress) info.address = this.state.editAddress;
-    console.log(info);
+    // console.log(info);
     Api.put('sittingRequests/' + item, info).then((res) => {
       window.location.reload(false);
     });
@@ -101,18 +101,19 @@ class SittingRequest extends Component {
 
   openList(list) {
     return (
-      <tr>
+      <tr><td align="left" colSpan="100%">
         {list.map((item, index) => (
-          <td align="left" colSpan="100%">
+          <div>
             <b style={{ marginRight: '150px' }}>Invitation {index + 1}</b>
             <b style={{ color: this.textColorByStatus(item.status) }}>
               {item.status}
             </b>
             <br />
             Receiver: {item.user.nickname}
-          </td>
+            </div>
         ))}
-      </tr>
+        </td></tr>
+      
     );
   }
 
