@@ -33,11 +33,17 @@ class Configuration extends Component {
       distanceWeight: 0,
       minimumFeedback: 0,
       refundPercentage: 90,
+      officeHourStart: '8:00',
+      officeHourEnd: '17:00',
+      UNDER_6_MONTHS: 0,
+      BASE: 0,
+      UNDER_18_MONTHS: 0,
+      UNDER_6_YEARS: 0,
     };
   }
 
   componentWillMount() {
-    Api.post('configuration/systemsetting', null).then((res) =>
+    Api.get('configuration/').then((res) =>
       this.setState({
         remindBeforeDuration_0: res.remindBeforeDuration_0,
         remindBeforeDuration_1: res.remindBeforeDuration_1,
@@ -50,8 +56,19 @@ class Configuration extends Component {
         distanceWeight: res.distanceWeight,
         minimumFeedback: res.minimumFeedback,
         refundPercentage: res.refundPercentage,
+        officeHourStart: res.officeHourStart,
+        officeHourEnd: res.officeHourEnd,
       }),
     );
+    Api.get('pricings').then(res => {
+      console.log(res[0])
+      this.setState({
+        BASE: res[0].baseAmount, 
+        UNDER_6_YEARS: res[1].baseAmount,
+        UNDER_18_MONTHS: res[2].baseAmount,
+        UNDER_6_MONTHS: res[3].baseAmount,
+      })
+    })
     // console.log(res));
   }
 
@@ -75,9 +92,16 @@ class Configuration extends Component {
       distanceWeight: this.state.distanceWeight,
       minimumFeedback: this.state.minimumFeedback,
       refundPercentage: this.state.refundPercentage,
+      officeHourStart: this.state.officeHourStart,
+      officeHourEnd: this.state.officeHourEnd
     };
-    console.log(body);
+    // console.log(body);
     Api.put('configuration/1', body);
+    let tmp = [this.state.BASE, this.state.UNDER_6_YEARS, this.state.UNDER_18_MONTHS, this.state.UNDER_6_MONTHS];
+    for (let i = 1; i < 5; i++){
+      let pricingsBody = { baseAmount: tmp[i-1] }
+      Api.put('pricings/' + i.toString(), pricingsBody);
+    }
   };
 
   render() {
@@ -206,6 +230,76 @@ class Configuration extends Component {
                   placeholder="input ..."
                   id="refundPercentage"
                   value={this.state.refundPercentage}
+                  onChange={this.handleSearchInput}
+                />
+              </InputGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>officeHourStart</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="input ..."
+                  id="officeHourStart"
+                  value={this.state.officeHourStart}
+                  onChange={this.handleSearchInput}
+                />
+              </InputGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>officeHourEnd</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="input ..."
+                  id="officeHourEnd"
+                  value={this.state.officeHourEnd}
+                  onChange={this.handleSearchInput}
+                />
+              </InputGroup>
+
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>BASE</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="input ..."
+                  id="BASE"
+                  value={this.state.BASE}
+                  onChange={this.handleSearchInput}
+                />
+              </InputGroup>
+
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>UNDER_6_YEARS</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="input ..."
+                  id="UNDER_6_YEARS"
+                  value={this.state.UNDER_6_YEARS}
+                  onChange={this.handleSearchInput}
+                />
+              </InputGroup>
+
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>UNDER_18_MONTHS</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="input ..."
+                  id="UNDER_18_MONTHS"
+                  value={this.state.UNDER_18_MONTHS}
+                  onChange={this.handleSearchInput}
+                />
+              </InputGroup>
+
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>UNDER_6_MONTHS</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="input ..."
+                  id="UNDER_6_MONTHS"
+                  value={this.state.UNDER_6_MONTHS}
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
