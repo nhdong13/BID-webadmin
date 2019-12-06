@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const url = `http://localhost:5000/api/v1`;
+=======
+const url = `http://192.168.1.3:5000/api/v1`;
+>>>>>>> 471bd5c765d546307e7c0f670eca3ad0ee8de2e3
 const apiUrl = {
   baseUrl: `${url}/`,
   login: `${url}/auth/login`,
