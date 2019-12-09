@@ -43,11 +43,15 @@ const parentIndex = React.lazy(() => import('./views/User/parent/index'));
 const bsitterIndex = React.lazy(() => import('./views/User/babysitter/index'));
 const invitationIndex = React.lazy(() => import('./views/Invitations/index'));
 const register = React.lazy(() => import('./views/User/register_account'));
+const feedback = React.lazy(() => import('./views/Feedback/index'));
+const report = React.lazy(() => import('./views/Feedback/report'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/configIndex', name: 'Configuration', component: configIndex },
+  { path: '/feedback', name: 'Feedback', component: feedback },
+  { path: '/report', name: 'Report', component: report },
   { path: '/systemsetting', name: 'System Setting', component: systemsetting },
   { path: '/registeruser', name: 'Register', component: register },
   { path: '/timesetting', name: 'Time Setting', component: timesetting },

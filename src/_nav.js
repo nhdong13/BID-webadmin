@@ -11,6 +11,16 @@ export default {
       icon: 'icon-settings',
     },
     {
+      name: 'Feedback',
+      url: '/feedback',
+      icon: 'icon-settings',
+    },
+    {
+      name: 'Report',
+      url: '/report',
+      icon: 'icon-settings',
+    },
+    {
       name: 'System Setting',
       url: '/systemsetting',
       icon: 'icon-settings',
