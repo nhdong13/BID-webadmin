@@ -287,6 +287,37 @@ class Users extends Component {
               </InputGroupAddon>
             </InputGroup>
           </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText style={({width:300})}><b>Maximum number of children</b></InputGroupText>
+              </InputGroupAddon>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>{item.babysitter.maxNumOfChildren}</InputGroupText>
+              </InputGroupAddon>
+              <InputGroupAddon addonType="append">
+                <InputGroupText>
+                  <i className="fa fa-asterisk"></i>
+                </InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+          </FormGroup>
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText style={({width:300})}><b>Minimum children age</b></InputGroupText>
+              </InputGroupAddon>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>{item.babysitter.minAgeOfChildren}</InputGroupText>
+              </InputGroupAddon>
+              <InputGroupAddon addonType="append">
+                <InputGroupText>
+                  <i className="fa fa-asterisk"></i>
+                </InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+          </FormGroup>
         </td>
       </tr>
     )
@@ -303,7 +334,7 @@ class Users extends Component {
               </InputGroupAddon>
               <Input
                 id="phonenumber"
-                placeholder={item.phoneNumber}
+                defaultValue={item.phoneNumber}
                 onChange={this.handleInputPress}
               />
               <InputGroupAddon addonType="append">
@@ -322,7 +353,7 @@ class Users extends Component {
               <Input
                 type="email"
                 id="email"
-                placeholder={item.email}
+                defaultValue={item.email}
                 onChange={this.handleInputPress}
               />
               <InputGroupAddon addonType="append">
@@ -340,7 +371,7 @@ class Users extends Component {
               </InputGroupAddon>
               <Input
                 id="address"
-                placeholder={item.address}
+                defaultValue={item.address}
                 onChange={this.handleInputPress}
               />
               <InputGroupAddon addonType="append">
@@ -357,6 +388,7 @@ class Users extends Component {
                 <InputGroupText>Weekly Schedule</InputGroupText>
               </InputGroupAddon>
               <Input
+                disabled
                 id="address"
                 placeholder={item.babysitter.weeklySchedule}
                 onChange={this.handleInputPress}
@@ -375,6 +407,7 @@ class Users extends Component {
                 <InputGroupText>Working time</InputGroupText>
               </InputGroupAddon>
               <Input
+                disabled
                 id="address"
                 placeholder={item.babysitter.daytime[3] == item.babysitter.evening[0] && 
                   item.babysitter.daytime[4] == item.babysitter.evening[1] ?

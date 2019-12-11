@@ -16,6 +16,7 @@ import {
 import Api from '../../api/api_helper';
 import moment from 'moment';
 import { formater } from '../../utils/MoneyFormater';
+import {ToastsContainer, ToastsStore, ToastsContainerPosition, ToastContainer} from 'react-toasts';
 
 class Configuration extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class Configuration extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     Api.get('configuration/').then((res) =>
       this.setState({
         remindBeforeDuration_0: res.remindBeforeDuration_0,
@@ -61,7 +62,6 @@ class Configuration extends Component {
       }),
     );
     Api.get('pricings').then(res => {
-      console.log(res[0])
       this.setState({
         BASE: res[0].baseAmount, 
         UNDER_6_YEARS: res[1].baseAmount,
@@ -79,7 +79,7 @@ class Configuration extends Component {
     // this.setState({event.target.id: event.target.value});
   };
 
-  submit = () => {
+  submit = async () => {
     let body = {
       remindBeforeDuration_0: this.state.remindBeforeDuration_0,
       remindBeforeDuration_1: this.state.remindBeforeDuration_1,
@@ -96,23 +96,39 @@ class Configuration extends Component {
       officeHourEnd: this.state.officeHourEnd
     };
     // console.log(body);
-    Api.put('configuration/1', body);
+    let check = true;
+    await Api.put('configuration/1', body).then(res => {
+    }).catch( e => {
+      check = false;
+    });
     let tmp = [this.state.BASE, this.state.UNDER_6_YEARS, this.state.UNDER_18_MONTHS, this.state.UNDER_6_MONTHS];
     for (let i = 1; i < 5; i++){
       let pricingsBody = { baseAmount: tmp[i-1] }
-      Api.put('pricings/' + i.toString(), pricingsBody);
+      await Api.put('pricings/' + i.toString(), pricingsBody).then(res => {
+      }).catch( e => {
+        check = false;
+      });;
+    }
+    if (!check) {
+      ToastsStore.error("Invalid parameter!");
+      this.componentDidMount();
+    } else {
+      ToastsStore.success("Successfully updated!");
+      this.componentDidMount();
     }
   };
 
   render() {
     return (
       <Card style={{ alignItems: 'left' }}>
+        <ToastsContainer store={ToastsStore} position={"top_right"} lightBackground/>
         <CardBody>
           <Jumbotron>
             <h1>System Setting</h1>
             <hr className="my-2" />
             <FormGroup style={{ marginTop: 30 }}>
-              <InputGroup>
+              <Row>
+              <Col md='6'><InputGroup>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>remindBeforeDuration_0</InputGroupText>
                 </InputGroupAddon>
@@ -123,7 +139,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>remindBeforeDuration_1</InputGroupText>
                 </InputGroupAddon>
@@ -134,7 +150,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>checkinTimeout</InputGroupText>
                 </InputGroupAddon>
@@ -145,7 +161,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>checkoutTimeout</InputGroupText>
                 </InputGroupAddon>
@@ -156,7 +172,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>timezone</InputGroupText>
                 </InputGroupAddon>
@@ -167,7 +183,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>maxTravelDistance</InputGroupText>
                 </InputGroupAddon>
@@ -178,7 +194,8 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>circleWeight</InputGroupText>
                 </InputGroupAddon>
@@ -189,7 +206,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>ratingWeight</InputGroupText>
                 </InputGroupAddon>
@@ -200,7 +217,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>distanceWeight</InputGroupText>
                 </InputGroupAddon>
@@ -211,7 +228,9 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              </Col>
+              <Col md='6'>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>minimumFeedback</InputGroupText>
                 </InputGroupAddon>
@@ -222,7 +241,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>refundPercentage</InputGroupText>
                 </InputGroupAddon>
@@ -233,7 +252,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>officeHourStart</InputGroupText>
                 </InputGroupAddon>
@@ -244,7 +263,7 @@ class Configuration extends Component {
                   onChange={this.handleSearchInput}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>officeHourEnd</InputGroupText>
                 </InputGroupAddon>
@@ -256,7 +275,7 @@ class Configuration extends Component {
                 />
               </InputGroup>
 
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>BASE</InputGroupText>
                 </InputGroupAddon>
@@ -268,7 +287,7 @@ class Configuration extends Component {
                 />
               </InputGroup>
 
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>UNDER_6_YEARS</InputGroupText>
                 </InputGroupAddon>
@@ -280,7 +299,7 @@ class Configuration extends Component {
                 />
               </InputGroup>
 
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>UNDER_18_MONTHS</InputGroupText>
                 </InputGroupAddon>
@@ -292,7 +311,7 @@ class Configuration extends Component {
                 />
               </InputGroup>
 
-              <InputGroup>
+              <InputGroup style={{ marginTop: 10 }}>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>UNDER_6_MONTHS</InputGroupText>
                 </InputGroupAddon>
@@ -302,12 +321,14 @@ class Configuration extends Component {
                   value={this.state.UNDER_6_MONTHS}
                   onChange={this.handleSearchInput}
                 />
-              </InputGroup>
+              </InputGroup></Col>
 
-              <InputGroupAddon addonType="append">
+              
+              </Row>
+              <Row><Col align='center' style={{marginTop: 50}}>
                 <Button
                   type="submit"
-                  size="md"
+                  size="lg"
                   color="primary"
                   onClick={() => {
                     if (window.confirm('Are you sure?')) {
@@ -317,7 +338,7 @@ class Configuration extends Component {
                 >
                   Save
                 </Button>
-              </InputGroupAddon>
+                </Col></Row>
             </FormGroup>
           </Jumbotron>
         </CardBody>

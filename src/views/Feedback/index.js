@@ -12,7 +12,7 @@ class Tables extends Component {
     };
   }
 
-  componentWillMount(){
+  componentDidMount(){
     Api.get('feedback').then(res => this.setState({feedbacks: res}));
   }
   render() {
@@ -34,7 +34,9 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.feedbacks.map(item => 
+                  {this.state.feedbacks.length == 0 ? 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
+                  : this.state.feedbacks.map(item => 
                     !item.isReport && item.reporter && <tr key={item.requestId}>
                     <td>{item.requestId}</td>
                     <td><b>{item.sitting.user.nickname}</b></td>
@@ -64,7 +66,9 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.feedbacks.map(item => 
+                  {this.state.feedbacks.length == 0 ? 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
+                  : this.state.feedbacks.map(item => 
                     !item.isReport && !item.reporter && item.sitting.bsitter && 
                     <tr key={item.requestId}>
                     <td>{item.requestId}</td>

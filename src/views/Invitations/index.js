@@ -101,18 +101,17 @@ class SittingRequest extends Component {
 
   openList(list) {
     return (
-      <tr><td align="left" colSpan="100%">
+      <tr><td align="left" colSpan="100%"><Row>
         {list.map((item, index) => (
-          <div>
-            <b style={{ marginRight: '150px' }}>Invitation {index + 1}</b>
+            <Col md='4' key={index}><b style={{ marginRight: '150px' }}>Invitation {index + 1}</b>
             <b style={{ color: this.textColorByStatus(item.status) }}>
               {item.status}
             </b>
             <br />
             Receiver: {item.user.nickname}
-            </div>
+            </Col>
         ))}
-        </td></tr>
+        </Row></td></tr>
       
     );
   }
@@ -137,10 +136,8 @@ class SittingRequest extends Component {
     if (this.state.requests) {
       this.state.requests.map((item) => {
         if (
-          item.sittingAddress
-            .toUpperCase()
-            .indexOf(this.state.key.toUpperCase()) != -1 ||
-          this.state.key == ''
+          item.sittingAddress.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1 ||
+          this.state.key == '' || (item.user.nickname.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1) 
         )
           result.push(item);
       });
@@ -155,10 +152,10 @@ class SittingRequest extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Search by Address</InputGroupText>
+                <InputGroupText>Search by Name/Address</InputGroupText>
               </InputGroupAddon>
               <Input
-                placeholder="Enter sitting address"
+                placeholder="Enter name/address"
                 onChange={this.handleSearchInput}
               />
               <InputGroupAddon addonType="append">

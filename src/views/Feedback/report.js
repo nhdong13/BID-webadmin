@@ -12,7 +12,7 @@ class Tables extends Component {
     };
   }
 
-  componentWillMount(){
+  componentDidMount(){
     Api.get('feedback').then(res => this.setState({feedbacks: res}));
   }
   render() {
@@ -20,7 +20,7 @@ class Tables extends Component {
       <div className="animated fadeIn">
         <Row>
           <Col xs="12" lg="6">
-            <h1>Feedback from Parents</h1>
+            <h1>from Parents</h1>
             <Card>
               <CardBody>
                 <Table responsive hover>
@@ -34,7 +34,9 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.feedbacks.map(item => 
+                  {this.state.feedbacks.length == 0 ? 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
+                  : this.state.feedbacks.map(item => 
                     item.isReport && item.reporter && <tr key={item.requestId}>
                     <td>{item.requestId}</td>
                     <td><b>{item.sitting.user.nickname}</b></td>
@@ -50,7 +52,7 @@ class Tables extends Component {
           </Col>
 
           <Col xs="12" lg="6">
-            <h1>Feedback from Babysitters</h1>
+            <h1>from Babysitters</h1>
             <Card>
               <CardBody>
                 <Table responsive hover>
@@ -64,7 +66,9 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.feedbacks.map(item => 
+                  {this.state.feedbacks.length == 0 ? 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
+                  : this.state.feedbacks.map(item => 
                     item.isReport && !item.reporter && item.sitting.bsitter && 
                     <tr key={item.requestId}>
                     <td>{item.requestId}</td>

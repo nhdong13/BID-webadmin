@@ -46,6 +46,7 @@ class RegisterAccount extends Component {
       images: [],
       names: [],
       ages: [],
+      isFile: false,
     };
   }
 
@@ -99,6 +100,7 @@ class RegisterAccount extends Component {
         email: profileArray[3].split(': ')[1],
         phone: profileArray[4].split(': ')[1],
         address: profileArray[5].split(': ')[1],
+        isFile: true,
       });
     }.bind(this);
     fileReader.readAsText(file, 'UTF8-1');
@@ -272,7 +274,8 @@ class RegisterAccount extends Component {
                   </FormGroup>
                 )}
               </CardHeader>
-
+              {this.state.isFile && (
+              <React.Fragment>
               <CardBody>
                   <FormGroup row>
                     <Col md="3">
@@ -480,6 +483,7 @@ class RegisterAccount extends Component {
                 </Row>
                 {this.state.childCount > 0 && this.renderlist(this.state.childCount)}</div>}
               </CardBody>
+              
 
               <CardFooter>
                 {this.state.accountType == 'Babysitter' && 
@@ -490,7 +494,7 @@ class RegisterAccount extends Component {
                 <Button type="submit" size="md" color="primary" onClick={()=>this.registerParent()}>
                   <i className="fa fa-dot-circle-o"></i> Register
                 </Button>}
-              </CardFooter>
+              </CardFooter></React.Fragment>)}
             </Card>
           </Col>
         </Row>

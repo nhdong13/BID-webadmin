@@ -264,7 +264,7 @@ class Users extends Component {
                 </InputGroupAddon>
                 <Input
                   id="phonenumber"
-                  placeholder={item.phoneNumber}
+                  defaultValue={item.phoneNumber}
                   onChange={this.handleInputPress}
                 />
                 <InputGroupAddon addonType="append">
@@ -283,7 +283,7 @@ class Users extends Component {
                 <Input
                   type="email"
                   id="email"
-                  placeholder={item.email}
+                  defaultValue={item.email}
                   onChange={this.handleInputPress}
                 />
                 <InputGroupAddon addonType="append">
@@ -301,7 +301,7 @@ class Users extends Component {
                 </InputGroupAddon>
                 <Input
                   id="address"
-                  placeholder={item.address}
+                  defaultValue={item.address}
                   onChange={this.handleInputPress}
                 />
                 <InputGroupAddon addonType="append">
