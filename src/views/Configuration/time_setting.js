@@ -55,7 +55,7 @@ class Configuration extends Component {
       <Jumbotron>
       <Row>
         <Col sm="8"><h1>Time Configuration</h1></Col>
-        <Col sm="4"><h2 style={{color: 'gray'}}>{new Date().toLocaleString()}</h2></Col>
+        <Col sm="4"><h2 style={{color: 'gray'}}>{moment().format('DD-MM-YYYY HH:mm:ss')}</h2></Col>
       </Row>
       <hr className="my-2" />
       <FormGroup style={({marginTop: 30})}>

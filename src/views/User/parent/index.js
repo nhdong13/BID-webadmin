@@ -61,7 +61,7 @@ class Users extends Component {
     if (this.state.users) {
       this.state.users.map((item) => {
         if (item.roleId == 2) 
-        if(item.id == this.state.key || this.state.key == '')
+        if (item.nickname.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1 || this.state.key == '')
           result.push(item);
       });
     }
@@ -75,15 +75,26 @@ class Users extends Component {
     if (this.state.editEmail) info.email = this.state.editEmail;
     if (this.state.editPhone) info.phoneNumber = this.state.editPhone;
     // console.log(info)
-    Api.put('users/'+ item, info).then(res => {
+    let phoneRegex = /^\d{10}$/;
+    let check = true;
+    let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (info.phoneNumber) if (!info.phoneNumber.match(phoneRegex)) check = false;
+    if (info.email) if (!info.email.match(emailRegex)) check = false;
+    if (check) {Api.put('users/' + item, info).then((res) => {
+      ToastsStore.success("Successfully updated!");
       window.location.reload(false);
+    }).catch(e => {
+      ToastsStore.error("Failed!");
     });
+    } else ToastsStore.error("Invalid parameter!");
   }
 
   banAccount = (item) => {
     let info = {active: !item.active};
     Api.put('users/' + item.id, info).then((res) => {
       window.location.reload(false);
+    }).catch(e => {
+      ToastsStore.error("Failed!")
     });
   };
   
@@ -121,10 +132,10 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Search by UserID</InputGroupText>
+                <InputGroupText>Search by Name</InputGroupText>
               </InputGroupAddon>
               <Input
-                placeholder="Enter user id"
+                placeholder="Enter keyword"
                 onChange={this.handleSearchInput}
               />
               <InputGroupAddon addonType="append">

@@ -59,7 +59,7 @@ class Users extends Component {
     if (this.state.users) {
       this.state.users.map((item) => {
         if (item.roleId == 3)
-          if (item.id == this.state.key || this.state.key == '')
+          if (item.nickname.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1 || this.state.key == '')
             result.push(item);
       });
     }
@@ -139,10 +139,10 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Search by UserID</InputGroupText>
+                <InputGroupText>Search by Name</InputGroupText>
               </InputGroupAddon>
               <Input
-                placeholder="Enter user id"
+                placeholder="Enter keyword"
                 onChange={this.handleSearchInput}
               />
               <InputGroupAddon addonType="append">

@@ -17,6 +17,7 @@ import {
 import { read } from 'fs';
 import Api from '../../api/api_helper';
 import moment from 'moment';
+import {ToastsContainer, ToastsStore} from 'react-toasts';
 
 class RegisterAccount extends Component {
   constructor(props) {
@@ -101,7 +102,8 @@ class RegisterAccount extends Component {
         phone: profileArray[4].split(': ')[1],
         address: profileArray[5].split(': ')[1],
         isFile: true,
-      });
+      })
+      else ToastsStore.error("Invalid file!");;
     }.bind(this);
     fileReader.readAsText(file, 'UTF8-1');
   };
@@ -126,8 +128,10 @@ class RegisterAccount extends Component {
       totalFeedback: 0,
       image: this.state.image.toString(),
     }
-    Api.post('users/bsitterRegister', body).then(res => {
-    });
+    if (!this.state.image || this.state.image == '' ) ToastsStore.error("Failed to register!")
+    else Api.post('users/bsitterRegister', body).then(res => {
+      window.location.reload(false);
+    }).catch(e => ToastsStore.error("Failed to register!"));
   }
 
   registerParent = () => {
@@ -151,7 +155,8 @@ class RegisterAccount extends Component {
       children: child,
     }
     Api.post('users/parentRegister', body).then(res => {
-    });
+      window.location.reload(false);
+    }).catch(e => ToastsStore.error("Failed to register!"));
   }
 
   inputChange = async(e) => {
@@ -191,7 +196,7 @@ class RegisterAccount extends Component {
     let list = [], a=[1,2,3,4];
     for(let i=0; i < counter; i++) {
       list.push(
-        <FormGroup row key={i} alignitems="right">
+        <FormGroup row key={i} alignitems="right" style={{marginTop: 30}}>
           <Col md="3"></Col>
           <Col md="3">
             <Input
@@ -241,6 +246,7 @@ class RegisterAccount extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
+        <ToastsContainer store={ToastsStore} position={"top_right"} lightBackground/>
           <Col xs="12" md="12">
             <Card>
               <CardHeader>
@@ -261,7 +267,7 @@ class RegisterAccount extends Component {
                   </Col>
                 </Row>
                 {this.state.accountType != '' && (
-                  <FormGroup row>
+                  <FormGroup row style={{marginTop: 30}}>
                     <Col md="3">
                       <Label htmlFor="file-input">File input</Label>
                     </Col>
@@ -388,13 +394,14 @@ class RegisterAccount extends Component {
                       <Col xs="9" md="6">
                         <Input
                           type="text"
+                          disabled
                           name="workingday"
                           defaultValue={this.state.workingday}
                           onChange={(e) => this.inputChange(e)}
                         />
                       </Col>
                     </FormGroup>
-                    <FormGroup row>
+                    {/* <FormGroup row>
                       <Col md="3">
                         <Label htmlFor="disabled-input">Daytime</Label>
                       </Col>
@@ -406,8 +413,8 @@ class RegisterAccount extends Component {
                           onChange={(e) => this.inputChange(e)}
                         />
                       </Col>
-                    </FormGroup>
-                    <FormGroup row>
+                    </FormGroup> */}
+                    {/* <FormGroup row>
                       <Col md="3">
                         <Label htmlFor="disabled-input">Evening</Label>
                       </Col>
@@ -419,7 +426,7 @@ class RegisterAccount extends Component {
                           onChange={(e) => this.inputChange(e)}
                         />
                       </Col>
-                    </FormGroup>
+                    </FormGroup> */}
                     <FormGroup row>
                       <Col md="3">
                         <Label htmlFor="disabled-input">Min. age of children</Label>
