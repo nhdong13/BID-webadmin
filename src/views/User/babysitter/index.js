@@ -16,6 +16,7 @@ import {
 } from 'reactstrap';
 import Api from '../../../api/api_helper';
 import Popup from 'reactjs-popup';
+import {ToastsContainer, ToastsStore} from 'react-toasts';
 
 class Users extends Component {
   constructor(props) {
@@ -24,6 +25,8 @@ class Users extends Component {
       users: [],
       headers: [],
       key: '',
+      maxNumOfChildren: 0,
+      minAgeOfChildren: 0,
     };
   }
 
@@ -64,21 +67,36 @@ class Users extends Component {
   }
 
   saveUserInfo = (item) => {
-    let info = {};
+    let info = {
+      minAgeOfChildren: this.state.minAgeOfChildren,
+      maxNumOfChildren: this.state.maxNumOfChildren,
+    };
     info.id = item;
     if (this.state.editAddress) info.address = this.state.editAddress;
     if (this.state.editEmail) info.email = this.state.editEmail;
     if (this.state.editPhone) info.phoneNumber = this.state.editPhone;
     // console.log(info)
+    let phoneRegex = /^\d{10}$/;
+    let check = true;
+    let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (info.phoneNumber) if (!info.phoneNumber.match(phoneRegex)) check = false;
+    if (info.email) if (!info.email.match(emailRegex)) check = false;
+    if (check) {
     Api.put('users/' + item, info).then((res) => {
+      ToastsStore.success("Successfully updated!");
       window.location.reload(false);
+    }).catch(e => {
+      ToastsStore.error("Failed!");
     });
+    } else ToastsStore.error("Invalid parameter!");
   };
 
   banAccount = (item) => {
     let info = {active: !item.active};
     Api.put('users/' + item.id, info).then((res) => {
       window.location.reload(false);
+    }).catch(e => {
+      ToastsStore.error("Failed!");
     });
   };
   
@@ -116,6 +134,7 @@ class Users extends Component {
   render() {
     return (
       <Row>
+        <ToastsContainer store={ToastsStore} position={"top_right"} lightBackground/>
         <Col xs="12" lg="12">
           <FormGroup>
             <InputGroup>
@@ -421,6 +440,44 @@ class Users extends Component {
                     'h'
                   }
                 onChange={this.handleInputPress}
+              />
+              <InputGroupAddon addonType="append">
+                <InputGroupText>
+                  <i className="fa fa-asterisk"></i>
+                </InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Minimum children age</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                id="minAgeOfChildren"
+                disabled
+                defaultValue={item.babysitter.minAgeOfChildren}
+                onChange={e => this.setState({minAgeOfChildren: e.target.value})}
+              />
+              <InputGroupAddon addonType="append">
+                <InputGroupText>
+                  <i className="fa fa-asterisk"></i>
+                </InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Maximum number of children</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                id="maxNumOfChildren"
+                disabled
+                defaultValue={item.babysitter.maxNumOfChildren}
+                onChange={e => this.setState({maxNumOfChildren: e.target.value})}
               />
               <InputGroupAddon addonType="append">
                 <InputGroupText>

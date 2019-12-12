@@ -16,7 +16,7 @@ import {
 import Api from '../../api/api_helper';
 import moment from 'moment';
 import { formater } from '../../utils/MoneyFormater';
-import {ToastsContainer, ToastsStore, ToastsContainerPosition, ToastContainer} from 'react-toasts';
+import {ToastsContainer, ToastsStore} from 'react-toasts';
 
 class Configuration extends Component {
   constructor(props) {

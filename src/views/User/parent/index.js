@@ -16,6 +16,7 @@ import {
 } from 'reactstrap';
 import Api, { apiConfig } from '../../../api/api_helper';
 import Popup from 'reactjs-popup';
+import {ToastsContainer, ToastsStore} from 'react-toasts';
 
 class Users extends Component {
   constructor(props) {
@@ -35,6 +36,10 @@ class Users extends Component {
       editPhone: null,
       editEmail: null,
       key: '',
+      adding: false,
+      image: '',
+      childName: '',
+      childAge: '',
     };
   }
 
@@ -92,9 +97,7 @@ class Users extends Component {
     // console.log(event.target.value);
     this.setState({key: event.target.value});
   }
-
   
-
   openDropDown = (id) => {
     // console.log(event.target.innerText)
     if (this.state.open == null)
@@ -113,6 +116,7 @@ class Users extends Component {
   render() {
     return (
       <Row>
+        <ToastsContainer store={ToastsStore} position={"top_right"} lightBackground/>
         <Col xs="12" lg="12">
           <FormGroup>
             <InputGroup>
@@ -253,6 +257,32 @@ class Users extends Component {
     );
   }
 
+  deleteChild = (id) => {
+    console.log(id)
+    Api.delete('childrens/' + id.toString()).catch(e => window.location.reload(false));
+  }
+
+  saveChild = (id) => {
+    let body = {
+      parentId: id,
+      name: this.state.childName,
+      age: this.state.childAge,
+      image: this.state.image,
+    }
+    console.log(body);
+    Api.post('childrens', body).catch(e => {
+      ToastsStore.error("Failed!");
+    });
+    this.refreshNullChild();
+  }
+
+  refreshNullChild = () => {
+    this.setState({image: '',
+    childName: '',
+    childAge: '', adding: false});
+    window.location.reload(false);
+  }
+
   openList(item) {
     return (
       <div style={({margin:50, paddingTop:50})}>
@@ -312,9 +342,15 @@ class Users extends Component {
               </InputGroup>
             </FormGroup>
             <FormGroup>
-              <InputGroup>
-                  <b>All children({item.parent.children.length})</b>
-                </InputGroup></FormGroup>
+                  <Row>
+                    <Col md='10' style={{paddingTop: 10}}><b>All children({item.parent.children.length})</b></Col>
+                    <Col md='2'>
+                    <Button type="submit" size="xs" color={!this.state.adding ? "success" : "danger"}
+                      onClick={() => this.setState({adding: !this.state.adding})}>{!this.state.adding ? "+" : "-"}</Button>
+                    
+                    </Col>
+                  </Row>
+                </FormGroup>
 
             {(item.parent.children.length > 0) ? 
             item.parent.children.map(child => 
@@ -326,14 +362,50 @@ class Users extends Component {
                 <InputGroupText>
                   <img src={child.image } width="50" height="50"/>
                 </InputGroupText>
-                <InputGroupAddon addonType="append">
+                <InputGroupAddon addonType="append"  onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>
                   <InputGroupText>
-                    <i className="fa fa-asterisk"></i>
+                    <i className="fa fa-remove"></i>
                   </InputGroupText>
                 </InputGroupAddon>
               </InputGroup>
             </FormGroup>)
             : <FormGroup>No children added</FormGroup>}
+
+            {this.state.adding &&
+            <FormGroup row alignitems="right">
+              <Row><Col md="4">
+                <b>Name</b>
+                <Input
+                  type="text"
+                  placeholder="Name"
+                  onChange={(e) => this.setState({ childName: e.target.value})}
+                />
+              </Col>
+              <Col md="2">
+                <b>Age</b>
+                <Input
+                  type="text"
+                  placeholder="Age"
+                  onChange={(e) => this.setState({ childAge: e.target.value})}
+                />
+              </Col>
+              <Col md="4">
+                <b>Avatar</b>
+                <Input
+                  type="file"
+                  style={{paddingTop: 5}}
+                  onChange={(e) => this.changeHandlerImages(e)}
+                />
+                {this.state.image != '' && this.state.image && 
+                  <img src={this.state.image} width="150"/>}
+              </Col>
+              <Col md='2'style={{paddingTop: 10}}>
+                <Button type="submit" size="xs" color="success" 
+                  onClick={() => this.saveChild(item.id)}>Add</Button>
+              </Col>
+              </Row>
+            </FormGroup>
+            }
 
             <FormGroup className="form-actions" align="center">
               <Button type="submit" size="lg" color="primary" 
@@ -359,6 +431,20 @@ class Users extends Component {
         </div>
     );
   };
+
+  changeHandlerImages = (evt) => {
+    evt.stopPropagation();
+    evt.preventDefault();
+    var file = evt.target.files[0];
+    let id = evt.target.id;
+    var fileReader = new FileReader();
+
+    fileReader.onload = function(progressEvent) {
+      this.setState({image: progressEvent.target.result});
+    }.bind(this);
+    fileReader.readAsDataURL(file);
+  }
+
 }
 
 export default Users;
