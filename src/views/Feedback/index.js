@@ -15,6 +15,23 @@ class Tables extends Component {
   componentDidMount(){
     Api.get('feedback').then(res => this.setState({feedbacks: res}));
   }
+
+  parentFeedback(){
+    let result = [];
+    this.state.feedbacks.map(item => 
+      {if (!item.isReport && item.reporter) result.push(item);}
+    )
+    return result;
+  }
+
+  bsitterFeedback(){
+    let result = [];
+    this.state.feedbacks.map(item => 
+      {if (!item.isReport && !item.reporter) result.push(item);}
+    )
+    return result;
+  }
+  
   render() {
     return (
       <div className="animated fadeIn">
@@ -34,7 +51,7 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.feedbacks.length == 0 ? 
+                  {this.parentFeedback().length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
                   : this.state.feedbacks.map(item => 
                     !item.isReport && item.reporter && <tr key={item.requestId}>
@@ -66,7 +83,7 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.feedbacks.length == 0 ? 
+                  {this.bsitterFeedback().length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
                   : this.state.feedbacks.map(item => 
                     !item.isReport && !item.reporter && item.sitting.bsitter && 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
+import { Button, Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import Api from '../../api/api_helper';
 import moment from 'moment';
 
@@ -13,8 +13,33 @@ class Tables extends Component {
   }
 
   componentDidMount(){
-    Api.get('feedback').then(res => this.setState({feedbacks: res}));
+    Api.get('feedback').then(res => {this.setState({feedbacks: res});console.log(this.state.feedbacks)});
+    
   }
+
+  solveReport = (id) => {
+    let body = {
+      status: 'Solved',
+    }
+    Api.put('feedback/' + id.toString(), body).then(res => window.location.reload(false));
+  }
+
+  parentFeedback(){
+    let result = [];
+    this.state.feedbacks.map(item => 
+      {if (item.isReport && item.reporter) result.push(item);}
+    )
+    return result;
+  }
+
+  bsitterFeedback(){
+    let result = [];
+    this.state.feedbacks.map(item => 
+      {if (item.isReport && !item.reporter) result.push(item);}
+    )
+    return result;
+  }
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -29,21 +54,32 @@ class Tables extends Component {
                     <th>RequestId</th>
                     <th>Reporter</th>
                     <th>Report date</th>
-                    <th>Description</th>
+                    {/* <th>Description</th> */}
                     <th>Status</th>
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.feedbacks.length == 0 ? 
+                  {this.parentFeedback().length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
                   : this.state.feedbacks.map(item => 
-                    item.isReport && item.reporter && <tr key={item.requestId}>
+                    item.isReport && item.reporter &&
+                    <React.Fragment key={item.id}><tr >
                     <td>{item.requestId}</td>
                     <td><b>{item.sitting.user.nickname}</b></td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
-                    <td>{item.description}</td>
+                    {/* <td>{item.description}</td> */}
                     <td><b style={{color: item.status == 'Unsolve' ? 'red' : 'green'}}>{item.status}</b></td>
                   </tr>
+                  <tr>
+                    <td><b>Description:</b></td>
+                    <td colSpan="2">{item.description.split('\n').map((des, index) => 
+                      <p key={index}>{des}</p>
+                    )}</td>
+                    <td>
+                      {item.status == 'Unsolve' && <Button type="submit" size="xs" color="success"
+                      onClick={() => this.solveReport(item.id)}>Sovle</Button>}
+                    </td>
+                  </tr></React.Fragment>
                   )}
                   </tbody>
                 </Table>
@@ -61,22 +97,31 @@ class Tables extends Component {
                     <th>RequestId</th>
                     <th>Reporter</th>
                     <th>Report date</th>
-                    <th>Description</th>
+                    {/* <th>Description</th> */}
                     <th>Status</th>
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.feedbacks.length == 0 ? 
+                  {this.bsitterFeedback().length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
                   : this.state.feedbacks.map(item => 
                     item.isReport && !item.reporter && item.sitting.bsitter && 
-                    <tr key={item.requestId}>
+                    <React.Fragment key={item.id}><tr>
                     <td>{item.requestId}</td>
                     <td><b>{item.sitting.bsitter.nickname}</b></td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
-                    <td>{item.description}</td>
+                    {/* <td>{item.description}</td> */}
                     <td><b style={{color: item.status == 'Unsolve' ? 'red' : 'green'}}>{item.status}</b></td>
-                  </tr>
+                  </tr><tr>
+                    <td><b>Description:</b></td>
+                    <td colSpan="2">{item.description.split('\n').map((des, index) => 
+                      <p key={index}>{des}</p>
+                    )}</td>
+                    <td>
+                      {item.status == 'Unsolve' && <Button type="submit" size="xs" color="success"
+                      onClick={() => this.solveReport(item.id)}>Sovle</Button>}
+                    </td>
+                  </tr></React.Fragment>
                   )}
                   </tbody>
                 </Table>
