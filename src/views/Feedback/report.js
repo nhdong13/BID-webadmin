@@ -13,7 +13,7 @@ class Tables extends Component {
   }
 
   componentDidMount(){
-    Api.get('feedback').then(res => {this.setState({feedbacks: res});console.log(this.state.feedbacks)});
+    Api.get('feedback').then(res => this.setState({feedbacks: res}));
     
   }
 

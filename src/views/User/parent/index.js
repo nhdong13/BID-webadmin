@@ -273,15 +273,15 @@ class Users extends Component {
     Api.delete('childrens/' + id.toString()).catch(e => window.location.reload(false));
   }
 
-  saveChild = (id) => {
+  saveChild = async (id) => {
     let body = {
       parentId: id,
       name: this.state.childName,
       age: this.state.childAge,
       image: this.state.image,
     }
-    console.log(body);
-    Api.post('childrens', body).catch(e => {
+    // console.log(body);
+    await Api.post('childrens', body).catch(e => {
       ToastsStore.error("Failed!");
     });
     this.refreshNullChild();
@@ -362,26 +362,33 @@ class Users extends Component {
                     </Col>
                   </Row>
                 </FormGroup>
-
+            
+            <Row>
             {(item.parent.children.length > 0) ? 
             item.parent.children.map(child => 
-            <FormGroup key={child.id}>
+            <Col md='4' key={child.id}>
+            <FormGroup>
               <InputGroup>
                 <InputGroupAddon addonType="prepend">
-                  <InputGroupText>{child.name}</InputGroupText>
+                  <InputGroupText  style={{width: 80}}>{child.name}</InputGroupText>
                 </InputGroupAddon>
                 <InputGroupText>
                   <img src={child.image } width="50" height="50"/>
                 </InputGroupText>
-                <InputGroupAddon addonType="append"  onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>
-                  <InputGroupText>
+                <InputGroupAddon addonType="append" style={{cursor:'pointer'}}  
+                  onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>
+                  <Button type="submit" size="xs" color="danger" 
+                  onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>X</Button>  
+                  {/* <InputGroupText>
                     <i className="fa fa-remove"></i>
-                  </InputGroupText>
+                    <Button type="submit" size="xs" color="danger" 
+                  onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>X</Button>
+                  </InputGroupText> */}
                 </InputGroupAddon>
               </InputGroup>
-            </FormGroup>)
+            </FormGroup></Col>)
             : <FormGroup>No children added</FormGroup>}
-
+            </Row>
             {this.state.adding &&
             <FormGroup row alignitems="right">
               <Row><Col md="4">

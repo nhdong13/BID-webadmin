@@ -23,7 +23,7 @@ class Configuration extends Component {
 
   componentDidMount() {
     setInterval(()=>{
-      this.setState({currentTime: moment()})
+      this.setState({currentTime: moment(this.state.currentTime).add(1, 'second')})
     }, 1000)
   }
 

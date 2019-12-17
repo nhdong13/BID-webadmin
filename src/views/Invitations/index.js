@@ -35,6 +35,8 @@ class SittingRequest extends Component {
       isOpen: false,
       editAddress: null,
       key: '',
+      startPoint: null,
+      endPoint: null,
     };
   }
 
@@ -101,9 +103,9 @@ class SittingRequest extends Component {
 
   openList(list) {
     return (
-      <tr><td align="left" colSpan="100%"><Row>
+      <tr><td align="left" colSpan="100%" style={{backgroundColor: '#f0f3f5'}}><Row>
         {list.map((item, index) => (
-            <Col md='4' key={index}><b style={{ marginRight: '150px' }}>Invitation {index + 1}</b>
+            <Col md='6' key={index}><b style={{ marginRight: '150px', fontSize: 16 }}>Invitation {index + 1}</b>
             <b style={{ color: this.textColorByStatus(item.status) }}>
               {item.status}
             </b>
@@ -135,6 +137,13 @@ class SittingRequest extends Component {
     let result = [];
     if (this.state.requests) {
       this.state.requests.map((item) => {
+        
+        if (this.state.startPoint == null || (moment(item.sittingDate).isAfter(moment(this.state.startPoint))) 
+          || (moment(item.sittingDate).isSame(moment(this.state.startPoint))) )
+        
+        if (this.state.endPoint == null || (moment(item.sittingDate).isBefore(moment(this.state.endPoint))) 
+          || (moment(item.sittingDate).isSame(moment(this.state.endPoint))) )
+          
         if (
           item.sittingAddress.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1 ||
           this.state.key == '' || (item.user.nickname.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1) 
@@ -164,6 +173,20 @@ class SittingRequest extends Component {
                 </InputGroupText>
               </InputGroupAddon>
             </InputGroup>
+          </FormGroup>
+
+          <FormGroup row align='center'>
+            <Label style={{paddingTop: 7, marginLeft: 40}}>From</Label>
+            <Col xs="12" md="2">
+              <Input type="date" id="date-input" name="date-input" placeholder="date" 
+                onChange={(st) => this.setState({ startPoint: st.target.value})}/>
+            </Col>
+            <Label style={{paddingTop: 7}}>To</Label>
+            <Col xs="12" md="2">
+              <Input type="date" id="date-input" name="date-input" placeholder="date" 
+                onChange={(ep) => this.setState({endPoint: ep.target.value})}/>
+            </Col>
+            {/* <Button onClick={() => this.setdate()}/> */}
           </FormGroup>
 
           <Card>

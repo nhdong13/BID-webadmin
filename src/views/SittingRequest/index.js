@@ -11,7 +11,7 @@ import {
   Form,
   InputGroup,
   InputGroupAddon,
-  InputGroupText,
+  InputGroupText, Badge,
   Button,Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 import Api from '../../api/api_helper';
@@ -32,6 +32,9 @@ class SittingRequest extends Component {
       isOpen: false,
       editAddress: null,
       key: '',
+      startPoint: null,
+      endPoint: null,
+      statusFilter: 0,
     };
   }
 
@@ -218,16 +221,42 @@ class SittingRequest extends Component {
     }
   };
 
+  selectedStatus = () => {
+    if (this.state.statusFilter == 0) return '';
+    if (this.state.statusFilter == 1) return 'PENDING';
+    if (this.state.statusFilter == 2) return 'CONFIRMED';
+    if (this.state.statusFilter == 3) return 'CANCELED';
+    if (this.state.statusFilter == 4) return 'ONGOING';
+    if (this.state.statusFilter == 5) return 'DONE';
+    if (this.state.statusFilter == 6) return 'DONE_UNCONFIMRED';
+    if (this.state.statusFilter == 7) return 'DONE_BY_NEWSTART';
+    if (this.state.statusFilter == 8) return 'SITTER_NOT_CHECKIN';
+    if (this.state.statusFilter == 9) return 'EXPIRED';
+  }
+
   searchFilter(){
     let result = [];
     if (this.state.requests){
     this.state.requests.map(item => {
+
+      if (this.selectedStatus() == '' || this.selectedStatus() == item.status)
+      
+      if (this.state.startPoint == null || (moment(item.sittingDate).isAfter(moment(this.state.startPoint))) 
+        || (moment(item.sittingDate).isSame(moment(this.state.startPoint))) )
+      
+      if (this.state.endPoint == null || (moment(item.sittingDate).isBefore(moment(this.state.endPoint))) 
+        || (moment(item.sittingDate).isSame(moment(this.state.endPoint))) )
+
       if(item.sittingAddress.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1 || this.state.key == '' || 
       (item.user.nickname.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1) || 
       (item.bsitter && item.bsitter.nickname.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1) )
         result.push(item);
     })}
     return result;
+  }
+
+  setdate = () => {
+    console.log(this.state.startPoint, this.state.endPoint);
   }
 
   render() {
@@ -254,6 +283,39 @@ class SittingRequest extends Component {
             </InputGroup>
           </FormGroup>
 
+          <FormGroup row align='center'>
+            <Label style={{paddingTop: 7, marginLeft: 40}}>From</Label>
+            <Col xs="12" md="2">
+              <Input type="date" id="date-input" name="date-input" placeholder="date" 
+                onChange={(st) => this.setState({ startPoint: st.target.value})}/>
+            </Col>
+            <Label style={{paddingTop: 7}}>To</Label>
+            <Col xs="12" md="2">
+              <Input type="date" id="date-input" name="date-input" placeholder="date" 
+                onChange={(ep) => this.setState({endPoint: ep.target.value})}/>
+            </Col>
+            <Col md='4'></Col>
+            <Col xs="12" md="3">
+              <Row>
+              <Label style={{paddingTop: 7}}>Status</Label>
+              <Input type="select" name="selectSm" id="SelectLm" bsSize="md" style={{width: 100}} 
+                onChange={(ev) => this.setState({statusFilter: ev.target.value})}>
+                <option value="0">All</option>
+                <option value="1">PENDING</option>
+                <option value="2">CONFIRMED</option>
+                <option value="3">CANCELED</option>
+                <option value="4">ONGOING</option>
+                <option value="5">DONE</option>
+                <option value="6">DONE_UNCONFIMRED</option>
+                <option value="7">DONE_BY_NEWSTART</option>
+                <option value="8">SITTER_NOT_CHECKIN</option>
+                <option value="9">EXPIRED</option>
+              </Input>
+              </Row>
+            </Col>
+            {/* <Button onClick={() => this.setdate()}/> */}
+          </FormGroup>
+
           <Card>
             <CardBody>
               <Table responsive hover>
@@ -265,6 +327,10 @@ class SittingRequest extends Component {
                   </tr>
                 </thead>
                 <tbody>
+                  {this.searchFilter().length == 0 &&
+                  <tr><td colSpan='100%' align='center'>No sitting request found.</td></tr>
+                  }
+                  
                   {this.searchFilter().map((item, index) => (
                     <React.Fragment key={index}>
                       <tr onClick={() => this.openDropDown(item)}>
