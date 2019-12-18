@@ -131,6 +131,18 @@ class Users extends Component {
     }
   };
 
+  weeklyScheduleString = (str) => {
+    let tmp = '';
+    if (str.indexOf('MON') != -1) tmp += 'T2 ';
+    if (str.indexOf('TUE') != -1) tmp += 'T3 ';
+    if (str.indexOf('WED') != -1) tmp += 'T4 ';
+    if (str.indexOf('THU') != -1) tmp += 'T5 ';
+    if (str.indexOf('FRI') != -1) tmp += 'T6 ';
+    if (str.indexOf('SAT') != -1) tmp += 'T7 ';
+    if (str.indexOf('SUN') != -1) tmp += 'CN ';
+    return tmp;
+  }
+
   render() {
     return (
       <Row>
@@ -180,18 +192,8 @@ class Users extends Component {
                             ? item.babysitter.totalFeedback
                             : 'N/A'}
                         </td>
-                        <td>{item.babysitter.weeklySchedule} <br/>
-                        {item.babysitter.daytime[3] == item.babysitter.evening[0] && 
-                        item.babysitter.daytime[4] == item.babysitter.evening[1] ?
-                        item.babysitter.daytime[0] + item.babysitter.daytime[1] +
-                          'h to ' +
-                          item.babysitter.evening[3] + item.babysitter.evening[4] +
-                          'h' : 
-                        item.babysitter.daytime +
-                          'h to ' +
-                          item.babysitter.evening +
-                          'h'
-                        }</td>
+                        <td>{this.weeklyScheduleString(item.babysitter.weeklySchedule)} <br/>
+                        {item.babysitter.startTime + 'h - ' + item.babysitter.endTime + 'h'}</td>
                         <td>{item.address}</td>
                         <td>{item.active ? <b style={({color: 'green'})}>Active</b> 
                         : <b style={({color: 'red'})}>Banned</b>}</td>
@@ -271,7 +273,7 @@ class Users extends Component {
                 <InputGroupText style={({width:300})}><b>Weekly Schedule</b></InputGroupText>
               </InputGroupAddon>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText style={({width:500})}>{item.babysitter.weeklySchedule}</InputGroupText>
+                <InputGroupText style={({width:500})}>{this.weeklyScheduleString(item.babysitter.weeklySchedule)}</InputGroupText>
               </InputGroupAddon>
               <InputGroupAddon addonType="append">
                 <InputGroupText>
@@ -287,17 +289,7 @@ class Users extends Component {
                 <InputGroupText style={({width:300})}><b>Working time</b></InputGroupText>
               </InputGroupAddon>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>{item.babysitter.daytime[3] == item.babysitter.evening[0] && 
-                        item.babysitter.daytime[4] == item.babysitter.evening[1] ?
-                        item.babysitter.daytime[0] + item.babysitter.daytime[1] +
-                          'h to ' +
-                          item.babysitter.evening[3] + item.babysitter.evening[4] +
-                          'h' : 
-                        item.babysitter.daytime +
-                          'h to ' +
-                          item.babysitter.evening +
-                          'h'
-                        }</InputGroupText>
+                <InputGroupText>{item.babysitter.startTime + 'h - ' + item.babysitter.endTime + 'h'}</InputGroupText>
               </InputGroupAddon>
               <InputGroupAddon addonType="append">
                 <InputGroupText>
@@ -409,7 +401,7 @@ class Users extends Component {
               <Input
                 disabled
                 id="address"
-                placeholder={item.babysitter.weeklySchedule}
+                placeholder={this.weeklyScheduleString(item.babysitter.weeklySchedule)}
                 onChange={this.handleInputPress}
               />
               <InputGroupAddon addonType="append">
@@ -428,17 +420,7 @@ class Users extends Component {
               <Input
                 disabled
                 id="address"
-                placeholder={item.babysitter.daytime[3] == item.babysitter.evening[0] && 
-                  item.babysitter.daytime[4] == item.babysitter.evening[1] ?
-                  item.babysitter.daytime[0] + item.babysitter.daytime[1] +
-                    'h to ' +
-                    item.babysitter.evening[3] + item.babysitter.evening[4] +
-                    'h' : 
-                  item.babysitter.daytime +
-                    'h to ' +
-                    item.babysitter.evening +
-                    'h'
-                  }
+                placeholder={item.babysitter.startTime + 'h - ' + item.babysitter.endTime + 'h'}
                 onChange={this.handleInputPress}
               />
               <InputGroupAddon addonType="append">
