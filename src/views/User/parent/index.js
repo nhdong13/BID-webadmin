@@ -430,6 +430,7 @@ class Users extends Component {
                 onClick={() => {if(window.confirm('Are you sure?')){this.saveUserInfo(item.id)};}}>
                 Save
               </Button>
+              
               {item.active ? 
               <Button
                   type="submit"

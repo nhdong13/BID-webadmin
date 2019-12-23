@@ -182,6 +182,7 @@ class SittingRequest extends Component {
                   <DropdownItem onClick={this.toggleDropdownSelect}>DONE_BY_NEWSTART</DropdownItem>
                   <DropdownItem onClick={this.toggleDropdownSelect}>SITTER_NOT_CHECKIN</DropdownItem>
                   <DropdownItem onClick={this.toggleDropdownSelect}>EXPIRED</DropdownItem>
+                  <DropdownItem onClick={this.toggleDropdownSelect}>STAFF_CANCELED</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
               <InputGroupAddon addonType="append">
@@ -232,6 +233,7 @@ class SittingRequest extends Component {
     if (this.state.statusFilter == 7) return 'DONE_BY_NEWSTART';
     if (this.state.statusFilter == 8) return 'SITTER_NOT_CHECKIN';
     if (this.state.statusFilter == 9) return 'EXPIRED';
+    if (this.state.statusFilter == 1) return 'STAFF_CANCELED';
   }
 
   searchFilter(){
@@ -310,7 +312,11 @@ class SittingRequest extends Component {
                 <option value="7">DONE_BY_NEWSTART</option>
                 <option value="8">SITTER_NOT_CHECKIN</option>
                 <option value="9">EXPIRED</option>
+                <option value="10">STAFF_CANCELED</option>
               </Input>
+              <Button style={{marginLeft: 50, width:35, height: 35}} onClick={() => this.refresher}>
+              <i className="fa fa-refresh"></i>
+              </Button>
               </Row>
             </Col>
             {/* <Button onClick={() => this.setdate()}/> */}
