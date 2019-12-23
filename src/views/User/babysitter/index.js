@@ -131,6 +131,16 @@ class Users extends Component {
     }
   };
 
+  logoutAccount = (id) => {
+    let body = {
+      firstTime: true,
+    }
+    Api.put('users/' + id.toString(), body).catch(e => {
+      ToastsStore.error("Failed!");
+    });
+    window.location.reload(false);
+  }
+
   weeklyScheduleString = (str) => {
     let tmp = '';
     if (str.indexOf('MON') != -1) tmp += 'T2 ';
@@ -478,6 +488,12 @@ class Users extends Component {
             >
               Save
             </Button>
+
+            <Button type="submit" size="lg" color="warning" style={({marginLeft: 40})}
+                onClick={() => {if(window.confirm('Are you sure?')){this.logoutAccount(item.id)};}}>
+                Logout this account
+            </Button>
+              
             {item.active ? 
             <Button
               type="submit"
