@@ -53,6 +53,7 @@ class Tables extends Component {
                   <tr>
                     <th>RequestId</th>
                     <th>Reporter</th>
+                    <th>Babysitter</th>
                     <th>Report date</th>
                     {/* <th>Description</th> */}
                     <th>Status</th>
@@ -65,14 +66,15 @@ class Tables extends Component {
                     item.isReport && item.reporter &&
                     <React.Fragment key={item.id}><tr >
                     <td>{item.requestId}</td>
-                    <td><b>{item.sitting.user.nickname}</b></td>
+                    <td><b>{item.sitting.user.nickname}</b><br/>{item.sitting.user.phoneNumber}</td>
+                    <td><b>{item.sitting.bsitter.nickname}</b><br/>{item.sitting.bsitter.phoneNumber}</td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
                     {/* <td>{item.description}</td> */}
                     <td><b style={{color: item.status == 'Unsolve' ? 'red' : 'green'}}>{item.status}</b></td>
                   </tr>
                   <tr>
                     <td><b>Description:</b></td>
-                    <td colSpan="2">{item.description.split('\n').map((des, index) => 
+                    <td colSpan="3">{item.description.split('\n').map((des, index) => 
                       <p key={index}>{des}</p>
                     )}</td>
                     <td>
@@ -96,6 +98,7 @@ class Tables extends Component {
                   <tr>
                     <th>RequestId</th>
                     <th>Reporter</th>
+                    <th>Parent</th>
                     <th>Report date</th>
                     {/* <th>Description</th> */}
                     <th>Status</th>
@@ -109,12 +112,13 @@ class Tables extends Component {
                     <React.Fragment key={item.id}><tr>
                     <td>{item.requestId}</td>
                     <td><b>{item.sitting.bsitter.nickname}</b></td>
+                    <td><b>{item.sitting.user.nickname}</b><br/>{item.sitting.user.phoneNumber}</td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
                     {/* <td>{item.description}</td> */}
                     <td><b style={{color: item.status == 'Unsolve' ? 'red' : 'green'}}>{item.status}</b></td>
                   </tr><tr>
                     <td><b>Description:</b></td>
-                    <td colSpan="2">{item.description.split('\n').map((des, index) => 
+                    <td colSpan="3">{item.description.split('\n').map((des, index) => 
                       <p key={index}>{des}</p>
                     )}</td>
                     <td>

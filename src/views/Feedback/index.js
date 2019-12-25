@@ -45,6 +45,7 @@ class Tables extends Component {
                   <tr>
                     <th>RequestId</th>
                     <th>Reporter</th>
+                    <th>Babysitter</th>
                     <th>Rating</th>
                     <th>Report date</th>
                     <th>Description</th>
@@ -57,7 +58,8 @@ class Tables extends Component {
                     !item.isReport && item.reporter && <tr key={item.requestId}>
                     <td>{item.requestId}</td>
                     <td><b>{item.sitting.user.nickname}</b></td>
-                    <td>{item.rating}</td>
+                    <td><b>{item.sitting.bsitter.nickname}</b></td>
+                    <td>{item.rating} <i className='fa fa-star' style={{color:'#fff130'}}></i> </td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
                     <td>{item.description}</td>
                   </tr>
@@ -77,6 +79,7 @@ class Tables extends Component {
                   <tr>
                     <th>RequestId</th>
                     <th>Reporter</th>
+                    <th>Parent</th>
                     <th>Rating</th>
                     <th>Report date</th>
                     <th>Description</th>
@@ -87,10 +90,11 @@ class Tables extends Component {
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
                   : this.state.feedbacks.map(item => 
                     !item.isReport && !item.reporter && item.sitting.bsitter && 
-                    <tr key={item.requestId}>
+                    <tr key={item.requestIdp}>
                     <td>{item.requestId}</td>
                     <td><b>{item.sitting.bsitter.nickname}</b></td>
-                    <td>{item.rating}</td>
+                    <td><b>{item.sitting.user.nickname}</b></td>
+                    <td>{item.rating}<i className='fa fa-star' style={{color:'#fff130'}}></i></td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
                     <td>{item.description}</td>
                   </tr>
