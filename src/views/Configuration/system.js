@@ -40,6 +40,8 @@ class Configuration extends Component {
       BASE: 0,
       UNDER_18_MONTHS: 0,
       UNDER_6_YEARS: 0,
+      pricing: null,
+      updatedPrice: [],
     };
   }
 
@@ -63,6 +65,8 @@ class Configuration extends Component {
     );
     Api.get('pricings').then(res => {
       this.setState({
+        pricing: res,
+        updatedPrice: res,
         BASE: res[0].baseAmount, 
         UNDER_6_YEARS: res[1].baseAmount,
         UNDER_18_MONTHS: res[2].baseAmount,
@@ -104,8 +108,7 @@ class Configuration extends Component {
     let tmp = [this.state.BASE, this.state.UNDER_6_YEARS, this.state.UNDER_18_MONTHS, this.state.UNDER_6_MONTHS];
     for (let i = 1; i < 5; i++){
       let pricingsBody = { baseAmount: tmp[i-1] }
-      await Api.put('pricings/' + i.toString(), pricingsBody).then(res => {
-      }).catch( e => {
+      await Api.put('pricings/' + i.toString(), pricingsBody).then(res => {}).catch( e => {
         check = false;
       });;
     }
@@ -118,7 +121,27 @@ class Configuration extends Component {
     }
   };
 
+  updatePrice = async () => {
+    const {updatedPrice} = this.state;
+    let check = true;
+    updatedPrice.map(async (item, i) => {
+      await Api.put('pricings/' + i.toString(), updatedPrice[i]).then(res => {}).catch( e => {
+        check = false;
+      });;
+    });
+
+    if (!check) {
+      ToastsStore.error("Invalid parameter!");
+      this.componentDidMount();
+    } else {
+      ToastsStore.success("Successfully updated!");
+      this.componentDidMount();
+    }
+  }
+
   render() {
+    const {pricing} = this.state;
+    let {updatedPrice} = this.state;
     return (
       <Card style={{ alignItems: 'left' }}>
         <ToastsContainer store={ToastsStore} position={"top_right"} lightBackground/>
@@ -339,6 +362,213 @@ class Configuration extends Component {
                   Save
                 </Button>
                 </Col></Row>
+                <hr/>
+                <h1>Price setting</h1>
+
+                <Row>
+                <Col md='3'></Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <b>Base price</b>
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                  <b>Overtime</b>
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                  <b>Holiday</b>
+                </Col>
+                <Col md='2'></Col>
+                </Row>
+
+                { pricing &&
+                <React.Fragment>
+                <Row>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <b>Base</b></Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  value={pricing[0].baseAmount}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[0].baseAmount = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  id="UNDER_6_YEARS"
+                  value={pricing[0].overtime}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[0].overtime = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  value={pricing[0].holiday}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[0].holiday = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='2'></Col>
+                </Row>
+
+                <Row>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <b>UNDER_6_YEARS</b></Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  value={pricing[1].baseAmount}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[1].baseAmount = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  id="UNDER_6_YEARS"
+                  value={pricing[1].overtime}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[1].overtime = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  value={pricing[1].holiday}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[0].holiday = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='2'></Col>
+                </Row>
+
+                <Row>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <b>UNDER_18_MONTHS</b></Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  value={pricing[2].baseAmount}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[2].baseAmount = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  id="UNDER_6_YEARS"
+                  value={pricing[2].overtime}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[2].overtime = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  value={pricing[2].holiday}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[2].holiday = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='2'></Col>
+                </Row>
+
+                <Row>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <b>UNDER_6_MONTHS</b></Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  value={pricing[3].baseAmount}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[3].baseAmount = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  id="UNDER_6_YEARS"
+                  value={pricing[3].overtime}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[3].overtime = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
+                <Input
+                  placeholder="input ..."
+                  value={pricing[3].holiday}
+                  onChange={(v) => 
+                    {
+                      let tmpArray = pricing;
+                      tmpArray[3].holiday = v.target.value;
+                      this.setState({updatedPrice: tmpArray})
+                    }}
+                />
+                </Col>
+                <Col md='2'></Col>
+                </Row>
+
+                <Row><Col align='center' style={{marginTop: 50}}>
+                <Button
+                  type="submit"
+                  size="lg"
+                  color="primary"
+                  onClick={() => {
+                    if (window.confirm('Are you sure?')) {
+                      this.updatePrice();
+                    }
+                  }}
+                >
+                  Save
+                </Button>
+                </Col></Row>
+                </React.Fragment>}
+
             </FormGroup>
           </Jumbotron>
         </CardBody>

@@ -46,6 +46,8 @@ class SittingRequest extends Component {
       'Babysitter',
       'Address',
       'Price',
+      'Checkin time',
+      'Checkout time',
       'Status',
     ];
     this.setState({ headers: header });
@@ -357,6 +359,8 @@ class SittingRequest extends Component {
                         </td>
                         <td>{item.sittingAddress}</td>
                         <td>{formater(item.totalPrice)} VNĐ</td>
+                        <td>{item.checkinTime ? moment(item.checkinTime).format('HH:mm') : 'N/A'}</td>
+                        <td>{item.checkoutTime ? moment(item.checkoutTime).format('HH:mm') : 'N/A'}</td>
                         <td>
                           <b
                             style={{
