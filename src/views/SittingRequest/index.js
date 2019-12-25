@@ -339,7 +339,7 @@ class SittingRequest extends Component {
                   <tr><td colSpan='100%' align='center'>No sitting request found.</td></tr>
                   }
                   
-                  {this.searchFilter().map((item, index) => (
+                  {this.searchFilter().reverse().map((item, index) => (
                     <React.Fragment key={index}>
                       <tr onClick={() => this.openDropDown(item)}>
                         <td>{item.id}</td>
