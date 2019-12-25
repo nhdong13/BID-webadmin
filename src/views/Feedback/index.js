@@ -57,7 +57,7 @@ class Tables extends Component {
                     !item.isReport && item.reporter && <tr key={item.requestId}>
                     <td>{item.requestId}</td>
                     <td><b>{item.sitting.user.nickname}</b></td>
-                    <td>{item.rating}</td>
+                    <td>{item.rating} <i className='fa fa-star' style={{color:'#fff130'}}></i> </td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
                     <td>{item.description}</td>
                   </tr>

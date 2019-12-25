@@ -42,6 +42,8 @@ class Configuration extends Component {
       UNDER_6_YEARS: 0,
       pricing: null,
       updatedPrice: [],
+      updatedHoliday: 0,
+      updatedOvertime: 0,
     };
   }
 
@@ -67,6 +69,8 @@ class Configuration extends Component {
       this.setState({
         pricing: res,
         updatedPrice: res,
+        updatedHoliday: res[0].holiday,
+        updatedOvertime: res[0].overtime,
         BASE: res[0].baseAmount, 
         UNDER_6_YEARS: res[1].baseAmount,
         UNDER_18_MONTHS: res[2].baseAmount,
@@ -122,10 +126,12 @@ class Configuration extends Component {
   };
 
   updatePrice = async () => {
-    const {updatedPrice} = this.state;
+    const {updatedPrice, updatedHoliday, updatedOvertime} = this.state;
     let check = true;
+    const tmp = { holiday: updatedHoliday, overtime: updatedOvertime}
     updatedPrice.map(async (item, i) => {
-      await Api.put('pricings/' + i.toString(), updatedPrice[i]).then(res => {}).catch( e => {
+      
+      await Api.put('pricings/' + i.toString(), tmp).then(res => {}).catch( e => {
         check = false;
       });;
     });
@@ -368,9 +374,6 @@ class Configuration extends Component {
                 <Row>
                 <Col md='3'></Col>
                 <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <b>Base price</b>
-                </Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
                   <b>Overtime</b>
                 </Col>
                 <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
@@ -382,172 +385,20 @@ class Configuration extends Component {
                 { pricing &&
                 <React.Fragment>
                 <Row>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <b>Base</b></Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  value={pricing[0].baseAmount}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[0].baseAmount = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
+                <Col md='3'></Col>
                 <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
                 <Input
                   placeholder="input ..."
                   id="UNDER_6_YEARS"
-                  value={pricing[0].overtime}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[0].overtime = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
+                  value={this.state.updatedOvertime}
+                  onChange={(v) => this.setState({updatedOvertime: v.target.value})}
                 />
                 </Col>
                 <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
                 <Input
                   placeholder="input ..."
-                  value={pricing[0].holiday}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[0].holiday = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='2'></Col>
-                </Row>
-
-                <Row>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <b>UNDER_6_YEARS</b></Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  value={pricing[1].baseAmount}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[1].baseAmount = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  id="UNDER_6_YEARS"
-                  value={pricing[1].overtime}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[1].overtime = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  value={pricing[1].holiday}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[0].holiday = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='2'></Col>
-                </Row>
-
-                <Row>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <b>UNDER_18_MONTHS</b></Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  value={pricing[2].baseAmount}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[2].baseAmount = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  id="UNDER_6_YEARS"
-                  value={pricing[2].overtime}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[2].overtime = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  value={pricing[2].holiday}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[2].holiday = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='2'></Col>
-                </Row>
-
-                <Row>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <b>UNDER_6_MONTHS</b></Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  value={pricing[3].baseAmount}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[3].baseAmount = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  id="UNDER_6_YEARS"
-                  value={pricing[3].overtime}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[3].overtime = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
-                />
-                </Col>
-                <Col md='3' align='center' style={{marginTop: 50, alignSelf:'center'}}>
-                <Input
-                  placeholder="input ..."
-                  value={pricing[3].holiday}
-                  onChange={(v) => 
-                    {
-                      let tmpArray = pricing;
-                      tmpArray[3].holiday = v.target.value;
-                      this.setState({updatedPrice: tmpArray})
-                    }}
+                  value={this.state.updatedHoliday}
+                  onChange={(v) => {this.setState({updatedHoliday: v.target.value})}}
                 />
                 </Col>
                 <Col md='2'></Col>
