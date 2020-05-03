@@ -47,6 +47,7 @@ class Tables extends Component {
         ToastsStore.error('Failed to save! Try again');
       }
       this.componentDidMount();
+      window.location.reload(false);
     });
   };
 
@@ -65,6 +66,7 @@ class Tables extends Component {
         ToastsStore.error('Failed to update! Try again');
       }
       this.componentDidMount();
+      window.location.reload(false);
     });
   };
 
@@ -77,6 +79,7 @@ class Tables extends Component {
       //   ToastsStore.error('Failed to destroy! Try again');
       // }
       this.componentDidMount();
+      window.location.reload(false);
     });
   };
 
