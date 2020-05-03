@@ -50,7 +50,8 @@ class Api {
         return json;
       }
       return json.then((err) => {
-        throw err;
+        console.log(err);
+        // throw err;
       });
     });
   }

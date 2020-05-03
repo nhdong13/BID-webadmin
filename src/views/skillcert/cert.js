@@ -19,12 +19,17 @@ class Tables extends Component {
       newCertName: null,
       newCertVname: null,
       newCertPoint: null,
+      updateCertName: null,
+      updateCertVname: null,
+      updateCertPoint: null,
+      isActive: null,
       reset: true,
+      open: null,
     };
   }
 
   componentDidMount(){
-    Api.get('certs').then(res => {this.setState({certs: res})});
+    Api.get('certs/all').then(res => {this.setState({certs: res})});
   }
 
   saveCert = () => {
@@ -41,6 +46,36 @@ class Tables extends Component {
       } else {
         ToastsStore.error('Failed to save! Try again');
       }
+      this.componentDidMount();
+    });
+  };
+
+  updateCert = (item) => {
+    let info = {};
+    info.id = item;
+    if (this.state.updateCertName) info.name = this.state.updateCertName;
+    if (this.state.updateCertVname) info.vname = this.state.updateCertVname;
+    if (this.state.updateCertPoint) info.point = this.state.updateCertPoint;
+    if (this.state.isActive) info.active = this.state.isActive;
+
+    Api.put('certs/' + info.id, info).then((res) => {
+      if (res == info.id) {
+        ToastsStore.success('Successfully updated!');
+      } else {
+        ToastsStore.error('Failed to update! Try again');
+      }
+      this.componentDidMount();
+    });
+  };
+
+  destroyCert = (item) => {
+    Api.delete('certs/' + item).then((res) => {
+      // console.log(res)
+      // if (res === item) {
+      //   ToastsStore.success('Destroyed!');
+      // } else {
+      //   ToastsStore.error('Failed to destroy! Try again');
+      // }
       this.componentDidMount();
     });
   };
@@ -116,21 +151,22 @@ class Tables extends Component {
                     <th>Name</th>
                     <th>Point</th>
                     <th>Status</th>
-                    <th></th>
                   </tr>
                   </thead>
                   <tbody>
                   {this.state.certs == null ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No certificate added</td></tr> 
                   : this.state.certs.map(item => 
-                    <React.Fragment key={item.id}><tr>
+                    <React.Fragment key={item.id}><tr onClick={() => this.openDropDown(item)}>
                     <td>{item.id}</td>
                     <td>{item.name}</td>
                     <td>{item.vname}</td>
                     <td>{item.point}</td>
                     <td><b style={{color: !item.active ? 'red' : 'green'}}>{item.active ? 'Active' : 'Deactive'}</b></td>
-                    <td>Edit</td>
                   </tr>
+                  {item.id == this.state.open
+                    ? this.openList(item)
+                    : null}
                   </React.Fragment>
                   )}
                   </tbody>
@@ -142,6 +178,92 @@ class Tables extends Component {
       </div>
 
     );
+  }
+
+  openDropDown = (id) => {
+    // console.log(event.target.innerText)
+    if (this.state.open == null) {
+      this.setState({
+        open: id.id,
+      });
+    } else {
+      this.setState({
+        open: null,
+      });
+    }
+  };
+
+  openList(item) {
+    return (
+      <React.Fragment>
+      <tr style={{backgroundColor: '#f0f3f5'}}>
+        <td></td>
+        <td>
+        <Input
+          type="text"
+          bsSize='sm'
+          style={{ width: 80 }}
+          defaultValue={item.name}
+          onChange={(e) => this.setState({updateCertName: e.target.value})}
+        />
+        </td>
+        <td>
+        <Input
+          type="text"
+          defaultValue={item.vname}
+          style={{ width: 80 }}
+          bsSize='sm'
+          onChange={(e) => this.setState({updateCertVname: e.target.value})}
+        />
+        </td>
+        <td>
+        <Input
+          type="text"
+          defaultValue={item.point}
+          style={{ width: 50 }}
+          bsSize='sm'
+          onChange={(e) => this.setState({updateCertPoint: e.target.value})}
+        />
+        </td>
+        <td>
+        <Input
+          type="select"
+          name="selectSm"
+          id="SelectLm"
+          bsSize="sm"
+          style={{ width: 80 }}
+          defaultValue={item.active ? 1 : 0}
+          onChange={(ev) =>
+            this.setState({ isActive: ev.target.value })
+          }
+        >
+          <option value="0">Deactive</option>
+          <option value="1">Active</option>
+        </Input>
+        </td>
+      </tr>
+      <tr><td align="center" colSpan="100%" style={{backgroundColor: '#f0f3f5', borderColor:'#f0f3f5'}}>
+      <Button
+        type="submit"
+        size="md"
+        color="warning"
+        onClick={() => this.updateCert(item.id)}
+      >
+        Update
+      </Button>
+
+      <Button
+        type="submit"
+        size="md"
+        style={{marginLeft: 30}}
+        color="danger"
+        onClick={() => this.destroyCert(item.id)}
+      >
+        Destroy
+      </Button>
+      </td></tr>
+      </React.Fragment>
+    )
   }
 }
 
