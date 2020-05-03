@@ -22,7 +22,7 @@ export default {
     },
     {
       name: 'Users management',
-      url: '',
+      url: '/users',
       icon: 'icon-cursor',
       children: [
         {
@@ -44,7 +44,7 @@ export default {
     },
     {
       name: 'Babysitter\'s skills and certificates',
-      url: '',
+      url: '/skillcert',
       icon: 'icon-cursor',
       children: [
         {

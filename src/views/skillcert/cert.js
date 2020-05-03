@@ -89,7 +89,43 @@ class Tables extends Component {
           position={'top_right'}
           lightBackground
         />
-          <Col xs="12" lg="6">
+          <Col lg="8">
+            <h1>Current certificates in system</h1>
+            <Card>
+              <CardBody>
+                <Table responsive hover>
+                  <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Code name</th>
+                    <th>Name</th>
+                    <th>Point</th>
+                    <th>Status</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {this.state.certs == null ? 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No certificate added</td></tr> 
+                  : this.state.certs.map(item => 
+                    <React.Fragment key={item.id}><tr onClick={() => this.openDropDown(item)}>
+                    <td>{item.id}</td>
+                    <td>{item.name}</td>
+                    <td>{item.vname}</td>
+                    <td>{item.point}</td>
+                    <td><b style={{color: !item.active ? 'red' : 'green'}}>{item.active ? 'Active' : 'Deactive'}</b></td>
+                  </tr>
+                  {item.id == this.state.open
+                    ? this.openList(item)
+                    : null}
+                  </React.Fragment>
+                  )}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Card>
+          </Col>
+
+          <Col lg="4">
             <h1>Add new certificate</h1>
             <Card>
               <CardBody>
@@ -138,42 +174,6 @@ class Tables extends Component {
               </CardBody>
             </Card>
           </Col>
-
-          <Col xs="12" lg="6">
-            <h1>Current certificates in system</h1>
-            <Card>
-              <CardBody>
-                <Table responsive hover>
-                  <thead>
-                  <tr>
-                    <th>Id</th>
-                    <th>Code name</th>
-                    <th>Name</th>
-                    <th>Point</th>
-                    <th>Status</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {this.state.certs == null ? 
-                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No certificate added</td></tr> 
-                  : this.state.certs.map(item => 
-                    <React.Fragment key={item.id}><tr onClick={() => this.openDropDown(item)}>
-                    <td>{item.id}</td>
-                    <td>{item.name}</td>
-                    <td>{item.vname}</td>
-                    <td>{item.point}</td>
-                    <td><b style={{color: !item.active ? 'red' : 'green'}}>{item.active ? 'Active' : 'Deactive'}</b></td>
-                  </tr>
-                  {item.id == this.state.open
-                    ? this.openList(item)
-                    : null}
-                  </React.Fragment>
-                  )}
-                  </tbody>
-                </Table>
-              </CardBody>
-            </Card>
-          </Col>
         </Row>
       </div>
 
@@ -202,8 +202,7 @@ class Tables extends Component {
         <Input
           type="text"
           bsSize='sm'
-          style={{ width: 80 }}
-          defaultValue={item.name}
+          defaultValue={item.name}style={{ width: 180 }}
           onChange={(e) => this.setState({updateCertName: e.target.value})}
         />
         </td>
@@ -211,7 +210,7 @@ class Tables extends Component {
         <Input
           type="text"
           defaultValue={item.vname}
-          style={{ width: 80 }}
+          style={{ width: 90 }}
           bsSize='sm'
           onChange={(e) => this.setState({updateCertVname: e.target.value})}
         />
@@ -220,8 +219,8 @@ class Tables extends Component {
         <Input
           type="text"
           defaultValue={item.point}
-          style={{ width: 50 }}
           bsSize='sm'
+          style={{ width: 70 }}
           onChange={(e) => this.setState({updateCertPoint: e.target.value})}
         />
         </td>
@@ -231,7 +230,7 @@ class Tables extends Component {
           name="selectSm"
           id="SelectLm"
           bsSize="sm"
-          style={{ width: 80 }}
+          style={{ width: 90 }}
           defaultValue={item.active ? 1 : 0}
           onChange={(ev) =>
             this.setState({ isActive: ev.target.value })
