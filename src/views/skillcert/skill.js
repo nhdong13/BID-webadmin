@@ -1,87 +1,123 @@
 import React, { Component } from 'react';
-import { Button, Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
+import { Button, Badge, Card, Label, Input, 
+ CardBody,FormGroup, InputGroup, InputGroupAddon, InputGroupText, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import Api from '../../api/api_helper';
 import moment from 'moment';
+import {
+  ToastsContainer,
+  ToastsStore,
+  ToastsContainerPosition,
+  ToastContainer,
+} from 'react-toasts';
 
 class Tables extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      feedbacks: [],
+      skills: [],
       headers: [],
+      newSkillName: null,
+      newSkillVname: null,
+      newSkillPoint: null,
+      updateSkillName: null,
+      updateSkillVname: null,
+      updateSkillPoint: null,
+      isActive: null,
+      reset: true,
+      open: null,
     };
   }
 
   componentDidMount(){
-    Api.get('feedback').then(res => this.setState({feedbacks: res}));
-    
+    Api.get('skills/all').then(res => {this.setState({skills: res});console.log(res)});
   }
 
-  solveReport = (id) => {
-    let body = {
-      status: 'Solved',
-    }
-    Api.put('feedback/' + id.toString(), body).then(res => window.location.reload(false));
-  }
+  saveSkill = () => {
+    if (!this.state.newSkillName || !this.state.newSkillVname || !this.state.newSkillPoint) return;
+    let info = {};
+    info.name = this.state.newSkillName;
+    info.vname = this.state.newSkillVname;
+    info.point = this.state.newSkillPoint;
+    info.active = true;
 
-  parentFeedback(){
-    let result = [];
-    this.state.feedbacks.map(item => 
-      {if (item.isReport && item.reporter) result.push(item);}
-    )
-    return result;
-  }
+    Api.post('skills', info).then((res) => {
+      if (res.name == info.name) {
+        ToastsStore.success('Successfully saved!');
+      } else {
+        ToastsStore.error('Failed to save! Try again');
+      }
+      this.componentDidMount();
+    });
+  };
 
-  bsitterFeedback(){
-    let result = [];
-    this.state.feedbacks.map(item => 
-      {if (item.isReport && !item.reporter) result.push(item);}
-    )
-    return result;
-  }
+  updateSkill = (item) => {
+    let info = {};
+    info.id = item;
+    if (this.state.updateSkillName) info.name = this.state.updateSkillName;
+    if (this.state.updateSkillVname) info.vname = this.state.updateSkillVname;
+    if (this.state.updateSkillPoint) info.point = this.state.updateSkillPoint;
+    if (this.state.isActive) info.active = this.state.isActive;
+
+    Api.put('skills/' + info.id, info).then((res) => {
+      if (res == info.id) {
+        ToastsStore.success('Successfully updated!');
+      } else {
+        ToastsStore.error('Failed to update! Try again');
+      }
+      this.componentDidMount();
+    });
+  };
+
+  destroySkill = (item) => {
+    Api.delete('skills/' + item).then((res) => {
+      // console.log(res)
+      // if (res === item) {
+      //   ToastsStore.success('Destroyed!');
+      // } else {
+      //   ToastsStore.error('Failed to destroy! Try again');
+      // }
+      this.componentDidMount();
+    });
+  };
 
   render() {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col xs="12" lg="6">
-            <h1>from Parents</h1>
+        <ToastsContainer
+          store={ToastsStore}
+          position={'top_right'}
+          lightBackground
+        />
+          <Col lg="8">
+            <h1>Current skills in system</h1>
             <Card>
               <CardBody>
                 <Table responsive hover>
                   <thead>
                   <tr>
-                    <th>RequestId</th>
-                    <th>Reporter</th>
-                    <th>Babysitter</th>
-                    <th>Report date</th>
-                    {/* <th>Description</th> */}
+                    <th>Id</th>
+                    <th>Code name</th>
+                    <th>Name</th>
+                    <th>Point</th>
                     <th>Status</th>
                   </tr>
                   </thead>
                   <tbody>
-                  {this.parentFeedback().length == 0 ? 
-                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
-                  : this.state.feedbacks.map(item => 
-                    item.isReport && item.reporter &&
-                    <React.Fragment key={item.id}><tr >
-                    <td>{item.requestId}</td>
-                    <td><b>{item.sitting.user.nickname}</b><br/>{item.sitting.user.phoneNumber}</td>
-                    <td><b>{item.sitting.bsitter.nickname}</b><br/>{item.sitting.bsitter.phoneNumber}</td>
-                    <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
-                    {/* <td>{item.description}</td> */}
-                    <td><b style={{color: item.status == 'Unsolve' ? 'red' : 'green'}}>{item.status}</b></td>
+                  {this.state.skills == null ? 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No skill added</td></tr> 
+                  : this.state.skills.map(item => 
+                    <React.Fragment key={item.id}><tr onClick={() => this.openDropDown(item)}>
+                    <td>{item.id}</td>
+                    <td>{item.name}</td>
+                    <td>{item.vname}</td>
+                    <td>{item.point}</td>
+                    <td><b style={{color: !item.active ? 'red' : 'green'}}>{item.active ? 'Active' : 'Deactive'}</b></td>
                   </tr>
-                  <tr>
-                    <td><b>Description:</b></td>
-                    <td colSpan="3">{item.description.split('\n').map((des, index) => 
-                      <p key={index}>{des}</p>
-                    )}</td>
-                    <td>
-                      {item.status == 'Unsolve' && <Button type="submit" size="xs" color="success"
-                      onClick={() => this.solveReport(item.id)}>Sovle</Button>}
-                    </td>
-                  </tr></React.Fragment>
+                  {item.id == this.state.open
+                    ? this.openList(item)
+                    : null}
+                  </React.Fragment>
                   )}
                   </tbody>
                 </Table>
@@ -89,44 +125,50 @@ class Tables extends Component {
             </Card>
           </Col>
 
-          <Col xs="12" lg="6">
-            <h1>from Babysitters</h1>
+          <Col lg="4">
+            <h1>Add new skill</h1>
             <Card>
               <CardBody>
-                <Table responsive hover>
-                  <thead>
-                  <tr>
-                    <th>RequestId</th>
-                    <th>Reporter</th>
-                    <th>Parent</th>
-                    <th>Report date</th>
-                    {/* <th>Description</th> */}
-                    <th>Status</th>
-                  </tr>
-                  </thead>
+                <Table responsive hover borderless>
                   <tbody>
-                  {this.bsitterFeedback().length == 0 ? 
-                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
-                  : this.state.feedbacks.map(item => 
-                    item.isReport && !item.reporter && item.sitting.bsitter && 
-                    <React.Fragment key={item.id}><tr>
-                    <td>{item.requestId}</td>
-                    <td><b>{item.sitting.bsitter.nickname}</b></td>
-                    <td><b>{item.sitting.user.nickname}</b><br/>{item.sitting.user.phoneNumber}</td>
-                    <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
-                    {/* <td>{item.description}</td> */}
-                    <td><b style={{color: item.status == 'Unsolve' ? 'red' : 'green'}}>{item.status}</b></td>
-                  </tr><tr>
-                    <td><b>Description:</b></td>
-                    <td colSpan="3">{item.description.split('\n').map((des, index) => 
-                      <p key={index}>{des}</p>
-                    )}</td>
-                    <td>
-                      {item.status == 'Unsolve' && <Button type="submit" size="xs" color="success"
-                      onClick={() => this.solveReport(item.id)}>Sovle</Button>}
-                    </td>
-                  </tr></React.Fragment>
-                  )}
+                    <tr><td>
+                        <Label htmlFor="disabled-input"><b>Code name</b></Label>
+                      </td><td>
+                        <Input
+                          type="text"
+                          placeholder="Skill code"
+                          onChange={(e) => this.setState({newSkillName: e.target.value})}
+                        />
+                    </td></tr>
+
+                    <tr><td>
+                        <Label htmlFor="disabled-input"><b>Skill name</b></Label>
+                      </td><td>
+                        <Input
+                          type="text"
+                          placeholder="Skill Name"
+                          onChange={(e) => this.setState({newSkillVname: e.target.value})}
+                        />
+                    </td></tr>
+                    <tr><td>
+                        <Label htmlFor="disabled-input"><b>Point</b></Label>
+                      </td><td>
+                        <Input
+                          type="text"
+                          placeholder="Point"
+                          onChange={(e) => this.setState({newSkillPoint: e.target.value})}
+                        />
+                    </td></tr>
+                    <tr><td colSpan='100%' align='center'>
+                      <Button
+                        type="submit"
+                        size="md"
+                        color="success"
+                        onClick={() => this.saveSkill()}
+                      >
+                        Save new skill
+                      </Button>
+                    </td></tr>
                   </tbody>
                 </Table>
               </CardBody>
@@ -136,6 +178,91 @@ class Tables extends Component {
       </div>
 
     );
+  }
+
+  openDropDown = (id) => {
+    // console.log(event.target.innerText)
+    if (this.state.open == null) {
+      this.setState({
+        open: id.id,
+      });
+    } else {
+      this.setState({
+        open: null,
+      });
+    }
+  };
+
+  openList(item) {
+    return (
+      <React.Fragment>
+      <tr style={{backgroundColor: '#f0f3f5'}}>
+        <td></td>
+        <td>
+        <Input
+          type="text"
+          bsSize='sm'
+          defaultValue={item.name}style={{ width: 220 }}
+          onChange={(e) => this.setState({updateSkillName: e.target.value})}
+        />
+        </td>
+        <td>
+        <Input
+          type="text"
+          defaultValue={item.vname}
+          style={{ width: 220 }}
+          bsSize='sm'
+          onChange={(e) => this.setState({updateSkillVname: e.target.value})}
+        />
+        </td>
+        <td>
+        <Input
+          type="text"
+          defaultValue={item.point}
+          bsSize='sm'
+          style={{ width: 50 }}
+          onChange={(e) => this.setState({updateSkillPoint: e.target.value})}
+        />
+        </td>
+        <td>
+        <Input
+          type="select"
+          name="selectSm"
+          id="SelectLm"
+          bsSize="sm"
+          style={{ width: 70 }}
+          defaultValue={item.active ? 1 : 0}
+          onChange={(ev) =>
+            this.setState({ isActive: ev.target.value })
+          }
+        >
+          <option value="0">Deactive</option>
+          <option value="1">Active</option>
+        </Input>
+        </td>
+      </tr>
+      <tr><td align="center" colSpan="100%" style={{backgroundColor: '#f0f3f5', borderColor:'#f0f3f5'}}>
+      <Button
+        type="submit"
+        size="md"
+        color="warning"
+        onClick={() => this.updateSkill(item.id)}
+      >
+        Update
+      </Button>
+
+      <Button
+        type="submit"
+        size="md"
+        style={{marginLeft: 30}}
+        color="danger"
+        onClick={() => this.destroySkill(item.id)}
+      >
+        Destroy
+      </Button>
+      </td></tr>
+      </React.Fragment>
+    )
   }
 }
 
