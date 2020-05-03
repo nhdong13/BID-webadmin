@@ -93,7 +93,7 @@ class Configuration extends Component {
             <FormGroup style={{ marginTop: 30 }}>
               <InputGroup>
                 <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Time</InputGroupText>
+                  <InputGroupText style={{width: 200}}>Time</InputGroupText>
                 </InputGroupAddon>
                 <Input
                   placeholder="input time to change the system clock"
@@ -115,6 +115,7 @@ class Configuration extends Component {
                   </Button>
                 </InputGroupAddon>
               </InputGroup>
+              <p style={{ marginTop: 30 }}>Format: YYYY-MM-DD HH:mm:ss</p>
               <p style={{ marginTop: 30 }}>Ex: 2015-11-10 07:59:45</p>
             </FormGroup>
             <hr

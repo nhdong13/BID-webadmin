@@ -173,7 +173,7 @@ class Configuration extends Component {
                 <Col md="6">
                   <InputGroup>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>remindBeforeDuration_0</InputGroupText>
+                      <InputGroupText style={{width: 200}}>remindBeforeDuration_0</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -184,7 +184,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>remindBeforeDuration_1</InputGroupText>
+                      <InputGroupText style={{width: 200}}>remindBeforeDuration_1</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -195,7 +195,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>checkinTimeout</InputGroupText>
+                      <InputGroupText style={{width: 200}}>checkinTimeout</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -206,7 +206,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>checkoutTimeout</InputGroupText>
+                      <InputGroupText style={{width: 200}}>checkoutTimeout</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -217,7 +217,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>timezone</InputGroupText>
+                      <InputGroupText style={{width: 200}}>timezone</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -228,7 +228,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>maxTravelDistance</InputGroupText>
+                      <InputGroupText style={{width: 200}}>maxTravelDistance</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -240,7 +240,7 @@ class Configuration extends Component {
 
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>circleWeight</InputGroupText>
+                      <InputGroupText style={{width: 200}}>circleWeight</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -251,7 +251,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>ratingWeight</InputGroupText>
+                      <InputGroupText style={{width: 200}}>ratingWeight</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -262,7 +262,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>distanceWeight</InputGroupText>
+                      <InputGroupText style={{width: 200}}>distanceWeight</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -275,7 +275,7 @@ class Configuration extends Component {
                 <Col md="6">
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>minimumFeedback</InputGroupText>
+                      <InputGroupText style={{width: 200}}>minimumFeedback</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -286,7 +286,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>refundPercentage</InputGroupText>
+                      <InputGroupText style={{width: 200}}>refundPercentage</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -297,7 +297,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>officeHourStart</InputGroupText>
+                      <InputGroupText style={{width: 200}}>officeHourStart</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -308,7 +308,7 @@ class Configuration extends Component {
                   </InputGroup>
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>officeHourEnd</InputGroupText>
+                      <InputGroupText style={{width: 200}}>officeHourEnd</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -320,7 +320,7 @@ class Configuration extends Component {
 
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>BASE</InputGroupText>
+                      <InputGroupText style={{width: 200}}>BASE</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -332,7 +332,7 @@ class Configuration extends Component {
 
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>UNDER_6_YEARS</InputGroupText>
+                      <InputGroupText style={{width: 200}}>UNDER_6_YEARS</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -344,7 +344,7 @@ class Configuration extends Component {
 
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>UNDER_18_MONTHS</InputGroupText>
+                      <InputGroupText style={{width: 200}}>UNDER_18_MONTHS</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."
@@ -356,7 +356,7 @@ class Configuration extends Component {
 
                   <InputGroup style={{ marginTop: 10 }}>
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText>UNDER_6_MONTHS</InputGroupText>
+                      <InputGroupText style={{width: 200}}>UNDER_6_MONTHS</InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="input ..."

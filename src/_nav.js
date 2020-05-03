@@ -21,16 +21,6 @@ export default {
       icon: 'icon-settings',
     },
     {
-      name: 'System Setting',
-      url: '/systemsetting',
-      icon: 'icon-settings',
-    },
-    {
-      name: 'Time Setting',
-      url: '/timesetting',
-      icon: 'icon-settings',
-    },
-    {
       name: 'Users management',
       url: '',
       icon: 'icon-cursor',
@@ -51,6 +41,33 @@ export default {
           icon: 'icon-settings',
         },
       ],
+    },
+    {
+      name: 'Babysitter\'s skills and certificates',
+      url: '',
+      icon: 'icon-cursor',
+      children: [
+        {
+          name: 'Skills',
+          url: '/skill',
+          icon: 'icon-settings',
+        },
+        {
+          name: 'Certificates',
+          url: '/cert',
+          icon: 'icon-settings',
+        }
+      ],
+    },
+    {
+      name: 'System Setting',
+      url: '/systemsetting',
+      icon: 'icon-settings',
+    },
+    {
+      name: 'Time Setting',
+      url: '/timesetting',
+      icon: 'icon-settings',
     },
     // {
     //   name: 'Configuration',

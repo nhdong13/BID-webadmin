@@ -167,11 +167,6 @@ class SittingRequest extends Component {
                 placeholder="Enter name/address"
                 onChange={this.handleSearchInput}
               />
-              <InputGroupAddon addonType="append">
-                <InputGroupText>
-                  <i className="fa fa-asterisk"></i>
-                </InputGroupText>
-              </InputGroupAddon>
             </InputGroup>
           </FormGroup>
 

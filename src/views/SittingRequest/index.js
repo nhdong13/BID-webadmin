@@ -18,6 +18,11 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Alert,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
 } from 'reactstrap';
 import Api from '../../api/api_helper';
 import moment from 'moment';
@@ -45,6 +50,9 @@ class SittingRequest extends Component {
       startPoint: null,
       endPoint: null,
       statusFilter: 0,
+      asc: true,
+      warning: false,
+      reset: true,
     };
   }
 
@@ -120,6 +128,17 @@ class SittingRequest extends Component {
     this.setState({ status: event.target.innerText });
   };
 
+  sort = (i) => {
+    if (this.state.requests) {
+      let tmpRequests = this.state.requests;
+      let key = Object.keys(tmpRequests[0])[i];
+      
+      tmpRequests.sort((a, b) => this.state.asc ? (a[key] - b[key]) : (b[key] - a[key]))
+      console.log(key);
+      this.setState({requests: tmpRequests, asc: !this.state.asc});
+    }
+  }
+
   openList(item) {
     return (
       <tr>
@@ -127,7 +146,7 @@ class SittingRequest extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Address</InputGroupText>
+                <InputGroupText style={{width: 200}}>Address</InputGroupText>
               </InputGroupAddon>
               <Input
                 id="address"
@@ -146,7 +165,7 @@ class SittingRequest extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Number of children</InputGroupText>
+                <InputGroupText style={{width: 200}}>Number of children</InputGroupText>
               </InputGroupAddon>
               <Input
                 disabled
@@ -165,7 +184,7 @@ class SittingRequest extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Min. age of children</InputGroupText>
+                <InputGroupText style={{width: 200}}>Min. age of children</InputGroupText>
               </InputGroupAddon>
               <Input
                 disabled
@@ -184,7 +203,7 @@ class SittingRequest extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Status</InputGroupText>
+                <InputGroupText style={{width: 200}}>Status</InputGroupText>
               </InputGroupAddon>
               <Dropdown
                 direction="right"
@@ -237,16 +256,56 @@ class SittingRequest extends Component {
           <FormGroup className="form-actions">
             <Button
               type="submit"
-              size="sm"
+              size="md"
               color="primary"
               onClick={() => this.saveUserInfo(item.id)}
             >
               Save
             </Button>
+            <Button
+              type="submit"
+              size="md"
+              color="warning"
+              style={{marginLeft: 20}}
+              onClick={() => this.toggleWarning()}
+            >
+              <b>Return money back</b> and <b>cancel sitting</b>
+            </Button>
+            <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                    className={'modal-warning ' + this.props.className}>
+              <ModalHeader toggle={this.toggleWarning}>Return money to customer</ModalHeader>
+              <ModalBody>
+                <Input type="select" name="ccmonth" id="ccmonth" style={{marginBottom: 20}}
+                  onChange={(ev) =>
+                    console.log(ev.target.value)
+                  }>
+                  <option value="0">0%</option>
+                  <option value="20">20%</option>
+                  <option value="50">50%</option>
+                  <option value="100">100%</option>
+                </Input>                
+              <Input type="textarea" name="textarea-input" id="textarea-input" rows="9"
+                             placeholder="Content..." defaultValue="Xin lỗi vì chúng tôi đã không cung cấp dịch vụ đạt kì vọng của bạn.
+                             Chúng tôi đã ghi nhận sự cố đã xảy ra với bạn và cố gắng để cải thiện dịch vụ.
+                             Chúng tôi sẽ hoàn lại số tiền của buổi trông trẻ này.
+                             Mong bạn thông cảm và tiếp tục ủng hộ chúng tôi.
+                             Xin chân thành cảm ơn." />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" onClick={() => this.toggleWarning()}>Submit</Button>{' '}
+                <Button color="secondary" onClick={() => this.toggleWarning()}>Cancel</Button>
+              </ModalFooter>
+            </Modal>
           </FormGroup>
         </td>
       </tr>
     );
+  }
+
+  toggleWarning = () => {
+    this.setState({
+      warning: !this.state.warning,
+    });
   }
 
   openDropDown = (id) => {
@@ -329,7 +388,7 @@ class SittingRequest extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Search by Name/Address</InputGroupText>
+                <InputGroupText style={{width: 200}}>Search by Name/Address</InputGroupText>
               </InputGroupAddon>
               <Input
                 placeholder="Enter keywords"
@@ -369,13 +428,13 @@ class SittingRequest extends Component {
             <Col md="4"></Col>
             <Col xs="12" md="3">
               <Row>
-                <Label style={{ paddingTop: 7 }}>Status</Label>
+                <Label style={{ paddingTop: 7, marginRight: 30 }}>Status</Label>
                 <Input
                   type="select"
                   name="selectSm"
                   id="SelectLm"
                   bsSize="md"
-                  style={{ width: 100 }}
+                  style={{ width: 230 }}
                   onChange={(ev) =>
                     this.setState({ statusFilter: ev.target.value })
                   }
@@ -393,8 +452,8 @@ class SittingRequest extends Component {
                   <option value="10">STAFF_CANCELED</option>
                 </Input>
                 <Button
-                  style={{ marginLeft: 50, width: 35, height: 35 }}
-                  onClick={() => this.refresher()}
+                  style={{ marginLeft: 25, width: 35, height: 35 }}
+                  onClick={() => {this.setState({reset: !this.state.reset});this.refresher()}}
                 >
                   <i className="fa fa-refresh"></i>
                 </Button>
@@ -409,7 +468,11 @@ class SittingRequest extends Component {
                 <thead>
                   <tr align="center">
                     {this.state.headers.map((item, index) => (
-                      <th key={index}>{item}</th>
+                      <th key={index}>
+                        {item}
+                        {/* <i className="cui-sort-ascending" style={{marginLeft: 5}} 
+                        onClick={() => this.sort(index)}></i> */}
+                      </th>
                     ))}
                   </tr>
                 </thead>

@@ -45,11 +45,15 @@ const invitationIndex = React.lazy(() => import('./views/Invitations/index'));
 const register = React.lazy(() => import('./views/User/register_account'));
 const feedback = React.lazy(() => import('./views/Feedback/index'));
 const report = React.lazy(() => import('./views/Feedback/report'));
+const skill = React.lazy(() => import('./views/skillcert/skill'));
+const cert = React.lazy(() => import('./views/skillcert/cert'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/configIndex', name: 'Configuration', component: configIndex },
+  { path: '/skill', name: 'Skills', component: skill },
+  { path: '/cert', name: 'Certificates', component: cert },
   { path: '/feedback', name: 'Feedback', component: feedback },
   { path: '/report', name: 'Report', component: report },
   { path: '/systemsetting', name: 'System Setting', component: systemsetting },

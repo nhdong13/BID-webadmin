@@ -20,7 +20,7 @@ class Detail extends Component {
       <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Phone Number</InputGroupText>
+                <InputGroupText style={{width: 200}}>Phone Number</InputGroupText>
               </InputGroupAddon>
               {/* <Input
                 id="phonenumber"

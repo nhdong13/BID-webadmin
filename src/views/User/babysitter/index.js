@@ -167,11 +167,6 @@ class Users extends Component {
                 placeholder="Enter keyword"
                 onChange={this.handleSearchInput}
               />
-              <InputGroupAddon addonType="append">
-                <InputGroupText>
-                  <i className="fa fa-asterisk"></i>
-                </InputGroupText>
-              </InputGroupAddon>
             </InputGroup>
           </FormGroup>
 
@@ -351,7 +346,7 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Phone Number</InputGroupText>
+                <InputGroupText style={{width: 200}}>Phone Number</InputGroupText>
               </InputGroupAddon>
               <Input
                 id="phonenumber"
@@ -369,7 +364,7 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Email</InputGroupText>
+                <InputGroupText style={{width: 200}}>Email</InputGroupText>
               </InputGroupAddon>
               <Input
                 type="email"
@@ -388,7 +383,7 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Address</InputGroupText>
+                <InputGroupText style={{width: 200}}>Address</InputGroupText>
               </InputGroupAddon>
               <Input
                 id="address"
@@ -406,7 +401,7 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Weekly Schedule</InputGroupText>
+                <InputGroupText style={{width: 200}}>Weekly Schedule</InputGroupText>
               </InputGroupAddon>
               <Input
                 disabled
@@ -425,7 +420,7 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Working time</InputGroupText>
+                <InputGroupText style={{width: 200}}>Working time</InputGroupText>
               </InputGroupAddon>
               <Input
                 disabled
@@ -444,7 +439,7 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Minimum children age</InputGroupText>
+                <InputGroupText style={{width: 200}}>Minimum children age</InputGroupText>
               </InputGroupAddon>
               <Input
                 id="minAgeOfChildren"
@@ -463,7 +458,7 @@ class Users extends Component {
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Maximum number of children</InputGroupText>
+                <InputGroupText style={{width: 200}}>Maximum number of children</InputGroupText>
               </InputGroupAddon>
               <Input
                 id="maxNumOfChildren"
