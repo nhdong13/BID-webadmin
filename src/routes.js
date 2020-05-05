@@ -48,12 +48,14 @@ const report = React.lazy(() => import('./views/Feedback/report'));
 const skill = React.lazy(() => import('./views/skillcert/skill'));
 const cert = React.lazy(() => import('./views/skillcert/cert'));
 const sisSkill = React.lazy(() => import('./views/skillcert/sisSkill'));
+const sisCert = React.lazy(() => import('./views/skillcert/sisCert'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/configIndex', name: 'Configuration', component: configIndex },
   { path: '/sisSkill', name: 'Issuing skills', component: sisSkill },
+  { path: '/sisCert', name: 'Issuing certificates', component: sisCert },
   { path: '/skill', name: 'Skills', component: skill },
   { path: '/cert', name: 'Certificates', component: cert },
   { path: '/feedback', name: 'Feedback', component: feedback },

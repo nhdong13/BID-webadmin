@@ -48,25 +48,25 @@ export default {
       icon: 'icon-cursor',
       children: [
         {
-          name: 'Skills',
-          url: '/skill',
-          icon: 'icon-settings',
-        },
-        {
-          name: 'Certificates',
-          url: '/cert',
-          icon: 'icon-settings',
-        },
-        {
           name: 'Issuing skills',
           url: '/sisSkill',
           icon: 'icon-settings',
         },
-        // {
-        //   name: 'Issuing Certificates',
-        //   url: '/sisSkill',
-        //   icon: 'icon-settings',
-        // }
+        {
+          name: 'Issuing Certificates',
+          url: '/sisCert',
+          icon: 'icon-settings',
+        },
+        {
+          name: 'Skills management',
+          url: '/skill',
+          icon: 'icon-settings',
+        },
+        {
+          name: 'Certificates management',
+          url: '/cert',
+          icon: 'icon-settings',
+        }
       ],
     },
     {

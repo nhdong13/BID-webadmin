@@ -14,7 +14,7 @@ class Tables extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      skills: [],
+      certs: [],
       users: [],
       sittersNotIn: [],
       sittersIn: [],
@@ -26,7 +26,7 @@ class Tables extends Component {
   }
 
   componentDidMount(){
-    Api.get('skills/all').then(res => {this.setState({skills: res});});
+    Api.get('certs/all').then(res => {this.setState({certs: res});});
   }
 
   getUsers = async() => {
@@ -36,34 +36,34 @@ class Tables extends Component {
       let temp = [];
       sitters.map(sister => {
         if (sister.roleId == 3)
-          this.hasSkill(sister, this.state.open) ? tmpres.push(sister) : temp.push(sister);
+          this.hasCert(sister, this.state.open) ? tmpres.push(sister) : temp.push(sister);
       })
       this.setState({sittersIn: tmpres, sittersNotIn: temp});
     });
   };
 
-  hasSkill = (user, id) => {
+  hasCert = (user, id) => {
     let check = false;
-    if (user.sitterSkills == []) return check;
-    user.sitterSkills.map(skill =>{
-      if (skill.skillId == id) check = true;
+    if (user.sitterCerts == []) return check;
+    user.sitterCerts.map(cert =>{
+      if (cert.certId == id) check = true;
     })
     return check;
   }
 
-  createSitterSkill = async(userId) => {
+  createSitterCert = async(userId) => {
     let body = {};
     body.sitterId = userId;
-    body.skillId = this.state.open;
-    await Api.post('sitterSkill', body);
+    body.certId = this.state.open;
+    await Api.post('sitterCert', body);
     await this.setState({sittersNotIn: []});
   }
 
-  destroySitterSkill = async(userId) => {
+  destroySitterCert = async(userId) => {
     let body = {};
     body.sitterId = userId;
-    body.skillId = this.state.open;
-    await  Api.delete('sitterSkill', body);
+    body.certId = this.state.open;
+    await  Api.delete('sitterCert', body);
     await this.setState({sittersNotIn: []});
   }
 
@@ -77,7 +77,7 @@ class Tables extends Component {
           lightBackground
         />
           <Col lg="4">
-            <h1>Current skills in system</h1>
+            <h1>Current certificates in system</h1>
             <Card>
               <CardBody>
                 <Table responsive hover>
@@ -89,9 +89,9 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.skills == null ? 
-                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No skill added</td></tr> 
-                  : this.state.skills.map(item => 
+                  {this.state.certs == null ? 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No certificate added</td></tr> 
+                  : this.state.certs.map(item => 
                     <React.Fragment key={item.id}>
                     <tr onClick={() => 
                       {
@@ -132,7 +132,7 @@ class Tables extends Component {
         <Card>
           <CardHeader>{this.state.sittersNotIn.length} sitter
               {this.state.sittersNotIn.length == 1 ? ' doesn\'t have ' : 's don\'t have '} 
-              '{this.state.skills[this.state.open - 1].vname}' skill
+              '{this.state.certs[this.state.open - 1].vname}' certificate
           </CardHeader>
           <CardBody>
             <Input
@@ -167,7 +167,7 @@ class Tables extends Component {
 
                     <td align='center'>
                       <Button block color="success" onClick={async() => {
-                        await this.createSitterSkill(item.id);
+                        await this.createSitterCert(item.id);
                         await this.getUsers();
                         }}>
                         <i className="fa fa-chevron-right"></i>
@@ -187,7 +187,7 @@ class Tables extends Component {
         <Card>
           <CardHeader>{this.state.sittersIn.length} sitter
               {this.state.sittersIn.length == 0 ? ' has' : 's have'} 
-              &nbsp;'{this.state.skills[this.state.open - 1].vname}' skill
+              &nbsp;'{this.state.certs[this.state.open - 1].vname}' certificate
           </CardHeader>
           <CardBody>
             <Input
@@ -216,7 +216,7 @@ class Tables extends Component {
                   <tr>
                     <td align='center'>
                       <Button block color="danger" onClick={async() => {
-                        await this.destroySitterSkill(item.id);
+                        await this.destroySitterCert(item.id);
                         await this.getUsers();
                       }}>
                         <i className="fa fa-chevron-left"></i>
