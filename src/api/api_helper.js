@@ -45,6 +45,7 @@ class Api {
       if (resp.status == 401) {
         // refresh token
       }
+      if (verb == 'DELETE') return;
       const json = resp.json();
       if (resp.ok) {
         return json;

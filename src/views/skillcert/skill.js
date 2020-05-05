@@ -29,7 +29,7 @@ class Tables extends Component {
   }
 
   componentDidMount(){
-    Api.get('skills/all').then(res => {this.setState({skills: res});console.log(res)});
+    Api.get('skills/all').then(res => {this.setState({skills: res});});
   }
 
   saveSkill = () => {

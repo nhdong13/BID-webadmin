@@ -56,7 +56,17 @@ export default {
           name: 'Certificates',
           url: '/cert',
           icon: 'icon-settings',
-        }
+        },
+        {
+          name: 'Issuing skills',
+          url: '/sisSkill',
+          icon: 'icon-settings',
+        },
+        // {
+        //   name: 'Issuing Certificates',
+        //   url: '/sisSkill',
+        //   icon: 'icon-settings',
+        // }
       ],
     },
     {
