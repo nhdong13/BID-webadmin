@@ -22,6 +22,8 @@ class Tables extends Component {
       isActive: null,
       reset: true,
       open: null,
+      key1: '',
+      key2: '',
     };
   }
 
@@ -115,7 +117,12 @@ class Tables extends Component {
 
           {this.state.open != null
               ? this.openList()
-              : null
+              : <Col lg='8'>
+                  <div style={{display: 'flex',  justifyContent:'center',
+                    alignItems:'center', height: '60vh'}}>
+                      <h1 style={{color:'#b3b3b3'}}> Please select a certificate </h1>
+                  </div>
+                </Col>
           }
               
         </Row>
@@ -137,6 +144,7 @@ class Tables extends Component {
           <CardBody>
             <Input
               placeholder="Enter name/address"
+              onChange={(e) => this.setState({key1: e.target.value})}
             />
 
             <Table responsive hover>
@@ -154,9 +162,9 @@ class Tables extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.sittersNotIn.length == 0 ? 
+                {this.searchFilter(this.state.sittersNotIn, 1).length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No sister added</td></tr> 
-                  : this.state.sittersNotIn.map(item => 
+                  : this.searchFilter(this.state.sittersNotIn, 1).map(item => 
                   (<React.Fragment key={item.id}>
                   <tr>
                     <td colSpan='4'>
@@ -192,6 +200,7 @@ class Tables extends Component {
           <CardBody>
             <Input
               placeholder="Enter name/address"
+              onChange={(e) => this.setState({key2: e.target.value})}
             />
 
             <Table responsive hover>
@@ -209,9 +218,9 @@ class Tables extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.sittersIn.length == 0 ? 
+                {this.searchFilter(this.state.sittersIn, 2).length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No sister added</td></tr> 
-                  : this.state.sittersIn.map(item => 
+                  : this.searchFilter(this.state.sittersIn, 2).map(item => 
                   (<React.Fragment key={item.id}>
                   <tr>
                     <td align='center'>
@@ -238,6 +247,25 @@ class Tables extends Component {
       </Col>
       </React.Fragment>
     )
+  }
+
+  searchFilter(list, type) {
+    let result = [];
+    const searchKey = type == 1 ? this.state.key1 : this.state.key2;
+    if (list) {
+      list.map((item) => {
+        if (
+          item.nickname
+            .toUpperCase()
+            .indexOf(searchKey.toUpperCase()) != -1 ||
+          item.phoneNumber
+            .toUpperCase()
+            .indexOf(searchKey.toUpperCase()) != -1
+        )
+        result.push(item);
+      });
+    }
+    return result;
   }
 }
 

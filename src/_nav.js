@@ -6,11 +6,6 @@ export default {
       icon: 'icon-settings',
     },
     {
-      name: 'Invitation Management',
-      url: '/invitations',
-      icon: 'icon-settings',
-    },
-    {
       name: 'Feedback',
       url: '/feedback',
       icon: 'icon-settings',
@@ -77,6 +72,11 @@ export default {
     {
       name: 'Time Setting',
       url: '/timesetting',
+      icon: 'icon-settings',
+    },
+    {
+      name: 'Invitation Management',
+      url: '/invitations',
       icon: 'icon-settings',
     },
     // {

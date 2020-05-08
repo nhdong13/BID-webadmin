@@ -29,6 +29,7 @@ import moment from 'moment';
 import { formater } from '../../utils/MoneyFormater';
 import colors from '../../assets/Color';
 import { thisExpression } from '@babel/types';
+import Feedback from '../Feedback/item';
 import {
   ToastsContainer,
   ToastsStore,
@@ -53,6 +54,7 @@ class SittingRequest extends Component {
       asc: true,
       warning: false,
       reset: true,
+      feedbacks: [],
     };
   }
 
@@ -74,7 +76,7 @@ class SittingRequest extends Component {
 
   refresher() {
     // setInterval(() =>
-    Api.get('sittingRequests/all').then((res) => {
+    Api.get('sittingRequests/').then((res) => {
       this.setState({ requests: res });
     });
     // }), 5000);
@@ -141,6 +143,29 @@ class SittingRequest extends Component {
 
   openList(item) {
     return (
+      <React.Fragment>
+      
+      <Modal isOpen={true} toggle={this.openDropDown}
+              className={'modal-lg'}>
+        <ModalHeader>
+            <p style={{width:760, marginBottom:-15}}>Thông tin buổi giữ trẻ 
+              <span style={{position: 'absolute', right: 30,
+                color: this.textColorByStatus(item.status)}}>{item.status}</span>
+            </p>
+        </ModalHeader>
+        <ModalBody>
+          <Row>
+            <Col md='6'>
+              <p>Phụ huynh</p>
+              {this.tblInfo(item.user)}
+            </Col>
+            <Col md='6'>
+              <p>Người giữ trẻ</p>
+              {item.bsitter ? this.tblInfo(item.bsitter) 
+              : <p style={{color:'#b3b3b3'}}>Chưa có người giữ trẻ </p>}
+            </Col>
+          </Row>
+        
       <tr>
         <td align="center" colSpan="100%">
           <FormGroup>
@@ -299,6 +324,14 @@ class SittingRequest extends Component {
           </FormGroup>
         </td>
       </tr>
+
+      {this.invitationList(item.invitations)}
+      </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={this.openDropDown}>Close</Button>
+        </ModalFooter>
+      </Modal>
+      </React.Fragment>
     );
   }
 
@@ -310,6 +343,7 @@ class SittingRequest extends Component {
 
   openDropDown = (id) => {
     // console.log(event.target.innerText)
+    this.feedbackList(id.id);
     if (this.state.open == null) {
       this.setState({
         open: id.id,
@@ -541,6 +575,111 @@ class SittingRequest extends Component {
               </Table>
             </CardBody>
           </Card>
+        </Col>
+      </Row>
+    );
+  }
+
+  feedbackList = async (requestId) => {
+    let response = [];
+    await Api.get('feedback/' + requestId).then(res => {
+      response = res;
+    });
+    this.setState({feedbacks: response});
+  }
+
+  invitationList(list) {
+    const feedbacks = this.state.feedbacks;
+
+    return (
+      <React.Fragment>
+      <tr><td align="left" colSpan="100%" style={{backgroundColor: '#f0f3f5'}}>
+        <h3 style={{marginLeft: 10}}>Invitations of request</h3>
+        <Row style={{marginLeft:0}}>
+        {list.map((item, index) => (
+            <Col md='6' key={index}>
+              <b style={{ marginRight: '150px', fontSize: 8 }}>Invitation {index + 1}</b>
+              <b style={{ color: this.textColorByStatus(item.status) }}>
+                {item.status}
+              </b>
+            <br />
+            Receiver: <a onClick={() => this.openUserInfo(item.user.id)} 
+                        style={{cursor:'pointer'}}>{item.user.nickname}</a>
+            </Col>
+        ))}
+        </Row>
+      </td></tr>
+      
+      <tr><td align="left" colSpan="100%" style={{backgroundColor: '#f0f3f5'}}>
+        <h3 style={{marginLeft: 10, marginTop:20}}>Feedback</h3>
+        <Row>
+        {feedbacks.length==0 ? 
+          <Col md='12'><p style={{color:'#b3b3b3', fontSize: 12, marginLeft: 10}}>No feedback yet.</p></Col>
+          : null
+        }
+        
+        {feedbacks.map((item, index) => !item.isReport ? (
+            <Col md='6' key={index}>
+              <Feedback user={item.sitting.user} key={item.id} feedback={item} isReport={item.isReport}></Feedback>
+            </Col>
+        ) : null)}
+        </Row>
+      </td></tr>
+
+      <tr><td align="left" colSpan="100%" style={{backgroundColor: '#f0f3f5'}}>
+        <h3 style={{marginLeft: 10, marginTop:20}}>Report</h3>
+        <Row>
+        {feedbacks.length==0 ? 
+          <Col md='12'><p style={{color:'#b3b3b3', fontSize: 12, marginLeft: 10}}>There is no report.</p></Col>
+          : null
+        }
+        
+        {feedbacks.map((item, index) => item.isReport ? (
+            <Col md='5' key={index}>
+              <Feedback user={item.sitting.user} key={index} feedback={item} isReport={item.isReport}></Feedback>
+            </Col>
+        ): null)}
+        </Row>
+      </td></tr>
+      </React.Fragment>
+    );
+  }
+
+  tblInfo(user) {
+    return (
+      <Row style={{fontSize:12}}>
+        <Col lg="3">
+          <img src={user.image} width="80" style={{marginTop:40}} />
+        </Col>
+        <Col lg='9'>
+          <Table responsive borderless>
+            <tbody>
+              <tr>
+                <td style={{ width: 50 }}>
+                  <b>Fullname</b>
+                </td>
+                <td>{user.nickname}</td>
+              </tr>
+              <tr>
+                <td style={{ width: 50 }}>
+                  <b>Phone number</b>
+                </td>
+                <td>{user.phoneNumber}</td>
+              </tr>
+              <tr>
+                <td style={{ width: 50 }}>
+                  <b>Email</b>
+                </td>
+                <td>{user.email}</td>
+              </tr>
+              <tr>
+                <td style={{ width: 50 }}>
+                  <b>Address</b>
+                </td>
+                <td>{user.address}</td>
+              </tr>
+            </tbody>
+          </Table>
         </Col>
       </Row>
     );

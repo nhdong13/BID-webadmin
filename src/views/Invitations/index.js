@@ -23,6 +23,7 @@ import moment from 'moment';
 import { formater } from '../../utils/MoneyFormater';
 import colors from '../../assets/Color';
 import { thisExpression } from '@babel/types';
+import Detail from '../User/babysitter/detail';
 
 class SittingRequest extends Component {
   constructor(props) {
@@ -37,6 +38,8 @@ class SittingRequest extends Component {
       key: '',
       startPoint: null,
       endPoint: null,
+      openInfo: false,
+      openInfoUser: null,
     };
   }
 
@@ -56,6 +59,7 @@ class SittingRequest extends Component {
     // setInterval(() =>
     Api.get('sittingRequests/').then((res) => {
       this.setState({ requests: res });
+      console.log(res)
     });
     // }), 5000);
   }
@@ -110,7 +114,7 @@ class SittingRequest extends Component {
               {item.status}
             </b>
             <br />
-            Receiver: {item.user.nickname}
+            Receiver: <a onClick={() => this.openUserInfo(item.user.id)} style={{cursor:'pointer'}}>{item.user.nickname}</a>
             </Col>
         ))}
         </Row></td></tr>
@@ -215,7 +219,9 @@ class SittingRequest extends Component {
                               'HH:mm',
                             ]).format('HH:mm')}
                           </td>
-                          <td style={{ width: 200 }} align="center">
+                          <td style={{ width: 200 }} align="center"
+                            onClick={()=> this.openUserInfo(item.user.id)}
+                          >
                             {item.user.nickname}
                           </td>
                           <td>{item.sittingAddress}</td>
@@ -240,8 +246,19 @@ class SittingRequest extends Component {
             </CardBody>
           </Card>
         </Col>
+        {this.state.openInfo ? 
+          <Detail isOpen={true} userId={this.state.openInfoUser} closeMethod={this.openUserInfo}/> 
+          : null
+        }
       </Row>
     );
+  }
+
+  openUserInfo = (userId) => {
+    this.setState({ 
+      openInfo: !this.state.openInfo,
+      openInfoUser: userId
+    });
   }
 }
 

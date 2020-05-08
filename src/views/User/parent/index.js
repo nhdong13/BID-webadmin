@@ -269,8 +269,8 @@ class Users extends Component {
   }
 
   deleteChild = (id) => {
-    console.log(id)
     Api.delete('childrens/' + id.toString()).catch(e => window.location.reload(false));
+    window.location.reload(false)
   }
 
   saveChild = async (id) => {
