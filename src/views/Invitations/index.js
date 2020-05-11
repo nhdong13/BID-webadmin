@@ -59,7 +59,6 @@ class SittingRequest extends Component {
     // setInterval(() =>
     Api.get('sittingRequests/').then((res) => {
       this.setState({ requests: res });
-      console.log(res)
     });
     // }), 5000);
   }

@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Button, Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import Api from '../../api/api_helper';
 import moment from 'moment';
+import Select from 'react-select';
+import Detail from '../User/babysitter/detail';
+import ParentDetail from '../User/parent/detail';
 
 class Tables extends Component {
   constructor(props) {
@@ -9,12 +12,24 @@ class Tables extends Component {
     this.state = {
       feedbacks: [],
       headers: [],
+      options: [],
+      rate1: 'Unsolve',
+      rate2: 'Unsolve',
+      openInfo: false,
+      openInfoUser: null,
+      openParent: false,
+      openInfoParent: null,
     };
   }
 
   componentDidMount(){
     Api.get('feedback').then(res => this.setState({feedbacks: res}));
-    
+    const options = [
+      { value: '0', label: 'Unsolve'},
+      { value: '1', label: 'Solved'},
+      { value: '2', label: 'All'},
+    ]
+    this.setState({options: options});
   }
 
   solveReport = (id) => {
@@ -27,7 +42,11 @@ class Tables extends Component {
   parentFeedback(){
     let result = [];
     this.state.feedbacks.map(item => 
-      {if (item.isReport && item.reporter) result.push(item);}
+      { 
+        if (item.isReport && item.reporter) {
+          if (item.status == this.state.rate1 || this.state.rate1 == 'All') result.push(item);
+        }
+      }
     )
     return result;
   }
@@ -35,7 +54,9 @@ class Tables extends Component {
   bsitterFeedback(){
     let result = [];
     this.state.feedbacks.map(item => 
-      {if (item.isReport && !item.reporter) result.push(item);}
+      {if (item.isReport && !item.reporter) 
+        if (item.status == this.state.rate2 || this.state.rate2 == 'All') result.push(item);
+      }
     )
     return result;
   }
@@ -45,8 +66,21 @@ class Tables extends Component {
       <div className="animated fadeIn">
         <Row>
           <Col xs="12" lg="6">
-            <h1>from Parents</h1>
             <Card>
+              <CardHeader>
+                <Row>
+                  <Col md='6'>
+                    <h3>Report from Parents</h3>
+                  </Col>
+                  <Col md='3'></Col>
+
+                  <Col md='3'>
+                    <Select options={this.state.options}
+                      onChange={(e) => this.setState({rate1: e.label})}/>
+                  </Col>
+                </Row>
+                
+              </CardHeader>
               <CardBody>
                 <Table responsive hover>
                   <thead>
@@ -61,13 +95,22 @@ class Tables extends Component {
                   </thead>
                   <tbody>
                   {this.parentFeedback().length == 0 ? 
-                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
-                  : this.state.feedbacks.map(item => 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">There is no report.</td></tr> 
+                  : this.parentFeedback().map(item => 
                     item.isReport && item.reporter &&
                     <React.Fragment key={item.id}><tr >
                     <td>{item.requestId}</td>
-                    <td><b>{item.sitting.user.nickname}</b><br/>{item.sitting.user.phoneNumber}</td>
-                    <td><b>{item.sitting.bsitter.nickname}</b><br/>{item.sitting.bsitter.phoneNumber}</td>
+                    <td>
+                      <b><a onClick={() => this.openParentInfo(item.sitting.user.id)} style={{cursor:'pointer'}}>
+                        {item.sitting.user.nickname}
+                      </a></b>
+                      <br/>{item.sitting.user.phoneNumber}
+                    </td>
+                    <td>
+                      <b><a onClick={() => this.openUserInfo(item.sitting.bsitter.id)} style={{cursor:'pointer'}}>
+                        {item.sitting.bsitter.nickname}<br/>{item.sitting.bsitter.phoneNumber}
+                      </a></b>
+                    </td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
                     {/* <td>{item.description}</td> */}
                     <td><b style={{color: item.status == 'Unsolve' ? 'red' : 'green'}}>{item.status}</b></td>
@@ -90,8 +133,21 @@ class Tables extends Component {
           </Col>
 
           <Col xs="12" lg="6">
-            <h1>from Babysitters</h1>
             <Card>
+              <CardHeader>
+                <Row>
+                  <Col md='6'>
+                    <h3>Report from Babysitters</h3>
+                  </Col>
+                  <Col md='3'></Col>
+
+                  <Col md='3'>
+                    <Select options={this.state.options}
+                      onChange={(e) => this.setState({rate2: e.label})}/>
+                  </Col>
+                </Row>
+                
+              </CardHeader>
               <CardBody>
                 <Table responsive hover>
                   <thead>
@@ -106,13 +162,22 @@ class Tables extends Component {
                   </thead>
                   <tbody>
                   {this.bsitterFeedback().length == 0 ? 
-                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No feedback yet.</td></tr> 
-                  : this.state.feedbacks.map(item => 
+                  <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">There is no report.</td></tr> 
+                  : this.bsitterFeedback().map(item => 
                     item.isReport && !item.reporter && item.sitting.bsitter && 
                     <React.Fragment key={item.id}><tr>
                     <td>{item.requestId}</td>
-                    <td><b>{item.sitting.bsitter.nickname}</b></td>
-                    <td><b>{item.sitting.user.nickname}</b><br/>{item.sitting.user.phoneNumber}</td>
+                    <td>
+                    <b><a onClick={() => this.openUserInfo(item.sitting.bsitter.id)} style={{cursor:'pointer'}}>
+                        {item.sitting.bsitter.nickname}<br/>{item.sitting.bsitter.phoneNumber}
+                      </a></b>
+                    </td>
+                    <td>
+                      <b><a onClick={() => this.openParentInfo(item.sitting.user.id)} style={{cursor:'pointer'}}>
+                        {item.sitting.user.nickname}
+                      </a></b>
+                      <br/>{item.sitting.user.phoneNumber}
+                    </td>
                     <td>{moment(item.createdAt).format('DD-MM-YYYY')}</td>
                     {/* <td>{item.description}</td> */}
                     <td><b style={{color: item.status == 'Unsolve' ? 'red' : 'green'}}>{item.status}</b></td>
@@ -133,9 +198,32 @@ class Tables extends Component {
             </Card>
           </Col>
         </Row>
+        {this.state.openInfo ? 
+          <Detail isOpen={true} userId={this.state.openInfoUser} closeMethod={this.openUserInfo}/> 
+          : null
+        }
+
+        {this.state.openParent ? 
+          <ParentDetail isOpen={true} userId={this.state.openInfoParent} closeMethod={this.openParentInfo}/> 
+          : null
+        }
       </div>
 
     );
+  }
+
+  openUserInfo = (userId) => {
+    this.setState({ 
+      openInfo: !this.state.openInfo,
+      openInfoUser: userId
+    });
+  }
+
+  openParentInfo = (userId) => {
+    this.setState({ 
+      openParent: !this.state.openParent,
+      openInfoParent: userId
+    });
   }
 }
 

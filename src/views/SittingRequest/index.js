@@ -36,6 +36,8 @@ import {
   ToastsContainerPosition,
   ToastContainer,
 } from 'react-toasts';
+import Detail from '../User/babysitter/detail';
+import ParentDetail from '../User/parent/detail';
 
 class SittingRequest extends Component {
   constructor(props) {
@@ -55,6 +57,11 @@ class SittingRequest extends Component {
       warning: false,
       reset: true,
       feedbacks: [],
+      district: '',
+      openInfo: false,
+      openInfoUser: null,
+      openParent: false,
+      openInfoParent: null,
     };
   }
 
@@ -136,7 +143,7 @@ class SittingRequest extends Component {
       let key = Object.keys(tmpRequests[0])[i];
       
       tmpRequests.sort((a, b) => this.state.asc ? (a[key] - b[key]) : (b[key] - a[key]))
-      console.log(key);
+      // console.log(key);
       this.setState({requests: tmpRequests, asc: !this.state.asc});
     }
   }
@@ -148,7 +155,7 @@ class SittingRequest extends Component {
       <Modal isOpen={true} toggle={this.openDropDown}
               className={'modal-lg'}>
         <ModalHeader>
-            <p style={{width:760, marginBottom:-15}}>Thông tin buổi giữ trẻ 
+            <p style={{width:760, marginBottom:0}}>Thông tin buổi giữ trẻ 
               <span style={{position: 'absolute', right: 30,
                 color: this.textColorByStatus(item.status)}}>{item.status}</span>
             </p>
@@ -292,7 +299,7 @@ class SittingRequest extends Component {
               size="md"
               color="warning"
               style={{marginLeft: 20}}
-              onClick={() => this.toggleWarning()}
+              onClick={this.toggleWarning}
             >
               <b>Return money back</b> and <b>cancel sitting</b>
             </Button>
@@ -317,7 +324,7 @@ class SittingRequest extends Component {
                              Xin chân thành cảm ơn." />
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" onClick={() => this.toggleWarning()}>Submit</Button>{' '}
+                <Button color="danger" onClick={() => this.staffCancel(item)}>Submit</Button>{' '}
                 <Button color="secondary" onClick={() => this.toggleWarning()}>Cancel</Button>
               </ModalFooter>
             </Modal>
@@ -335,10 +342,17 @@ class SittingRequest extends Component {
     );
   }
 
-  toggleWarning = () => {
+  toggleWarning = (item) => {
     this.setState({
       warning: !this.state.warning,
     });
+  }
+
+  staffCancel = (item) => {
+    let body = {};
+    body.status = 'STAFF_CANCELED';
+    Api.put('sittingRequests/'+ item.id, body);
+    window.location.reload(false);
   }
 
   openDropDown = (id) => {
@@ -371,10 +385,27 @@ class SittingRequest extends Component {
     if (this.state.statusFilter == 10) return 'STAFF_CANCELED';
   };
 
+  selectedDistrict = () => {
+    if (this.state.district == 0) return '';
+    if (this.state.district == 1) return 'Q12';
+    if (this.state.district == 2) return 'Gò Vấp';
+    if (this.state.district == 3) return 'Q2';
+    if (this.state.district == 4) return 'Q3';
+    if (this.state.district == 5) return 'Q5';
+    if (this.state.district == 6) return 'Q10';
+    if (this.state.district == 7) return 'Tân Bình';
+    if (this.state.district == 8) return 'Tân Phú';
+    if (this.state.district == 9) return 'Phú Nhuận';
+  };
+
   searchFilter() {
     let result = [];
     if (this.state.requests) {
       this.state.requests.map((item) => {
+        if (this.selectedDistrict() == ''|| 
+          item.sittingAddress
+            .toUpperCase()
+            .indexOf(this.selectedDistrict().toUpperCase()) != -1)
         if (this.selectedStatus() == '' || this.selectedStatus() == item.status)
           if (
             this.state.startPoint == null ||
@@ -406,7 +437,7 @@ class SittingRequest extends Component {
   }
 
   setdate = () => {
-    console.log(this.state.startPoint, this.state.endPoint);
+    // console.log(this.state.startPoint, this.state.endPoint);
   };
 
   render() {
@@ -418,7 +449,7 @@ class SittingRequest extends Component {
           lightBackground
         />
 
-        <Col xs="12" lg="12">
+        <Col md="12">
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
@@ -435,67 +466,113 @@ class SittingRequest extends Component {
               </InputGroupAddon>
             </InputGroup>
           </FormGroup>
+        </Col>
 
-          <FormGroup row align="center">
-            <Label style={{ paddingTop: 7, marginLeft: 40 }}>From</Label>
-            <Col xs="12" md="2">
+        <Col md="12">
+            <Row>
+            <Col md="2">
+              <Row>
+              <Label style={{ paddingTop: 7, marginLeft: 20, marginRight: 10 }}>From</Label>
+            
               <Input
                 type="date"
                 id="date-input"
                 name="date-input"
                 placeholder="date"
+                style={{width: 160}}
                 onChange={(st) =>
                   this.setState({ startPoint: st.target.value })
                 }
               />
+              </Row>
             </Col>
-            <Label style={{ paddingTop: 7 }}>To</Label>
-            <Col xs="12" md="2">
+
+            <Col md="2">
+              <Row>
+              <Label style={{ paddingTop: 7, marginLeft: 20, marginRight: 10 }}>To</Label>
+            
               <Input
                 type="date"
                 id="date-input"
                 name="date-input"
                 placeholder="date"
+                style={{width: 160}}
                 onChange={(ep) => this.setState({ endPoint: ep.target.value })}
               />
+              </Row>
             </Col>
-            <Col md="4"></Col>
-            <Col xs="12" md="3">
+            <Col md="3"></Col>
+            <Col md="2">
               <Row>
-                <Label style={{ paddingTop: 7, marginRight: 30 }}>Status</Label>
-                <Input
-                  type="select"
-                  name="selectSm"
-                  id="SelectLm"
-                  bsSize="md"
-                  style={{ width: 230 }}
-                  onChange={(ev) =>
-                    this.setState({ statusFilter: ev.target.value })
-                  }
-                >
-                  <option value="0">All</option>
-                  <option value="1">PENDING</option>
-                  <option value="2">CONFIRMED</option>
-                  <option value="3">CANCELED</option>
-                  <option value="4">ONGOING</option>
-                  <option value="5">DONE</option>
-                  <option value="6">DONE_UNCONFIMRED</option>
-                  <option value="7">DONE_BY_NEWSTART</option>
-                  <option value="8">SITTER_NOT_CHECKIN</option>
-                  <option value="9">EXPIRED</option>
-                  <option value="10">STAFF_CANCELED</option>
-                </Input>
-                <Button
-                  style={{ marginLeft: 25, width: 35, height: 35 }}
-                  onClick={() => {this.setState({reset: !this.state.reset});this.refresher()}}
-                >
-                  <i className="fa fa-refresh"></i>
-                </Button>
+              <Label style={{ paddingTop: 7, marginLeft: 20, marginRight: 10 }}>District</Label>
+            
+              <Input
+                    type="select"
+                    name="selectSm"
+                    id="SelectLm"
+                    bsSize="md"
+                    style={{ width: 120 }}
+                    onChange={(ev) =>
+                      this.setState({ district: ev.target.value })
+                    }
+                  >
+                    <option value="0">All</option>
+                    <option value="1">Q12</option>
+                    <option value="2">Gò Vấp</option>
+                    <option value="3">Q2</option>
+                    <option value="4">Q3</option>
+                    <option value="5">Q5</option>
+                    <option value="6">Q10</option>
+                    <option value="7">Tân Bình</option>
+                    <option value="8">Tân Phú</option>
+                    <option value="9">Phú Nhuận</option>
+              </Input>
+              </Row>
+            </Col>
+            <Col md="3">
+              <Row>
+                <Col md='2'><Label style={{ paddingTop: 7 }}>Status</Label></Col>
+                <Col md='7'>
+                  <Input
+                    type="select"
+                    name="selectSm"
+                    id="SelectLm"
+                    bsSize="md"
+                    style={{ width: 230 }}
+                    onChange={(ev) =>
+                      this.setState({ statusFilter: ev.target.value })
+                    }
+                  >
+                    <option value="0">All</option>
+                    <option value="1">PENDING</option>
+                    <option value="2">CONFIRMED</option>
+                    <option value="3">CANCELED</option>
+                    <option value="4">ONGOING</option>
+                    <option value="5">DONE</option>
+                    <option value="6">DONE_UNCONFIMRED</option>
+                    <option value="7">DONE_BY_NEWSTART</option>
+                    <option value="8">SITTER_NOT_CHECKIN</option>
+                    <option value="9">EXPIRED</option>
+                    <option value="10">STAFF_CANCELED</option>
+                  </Input>
+                </Col>
+                <Col md='2'>
+                  <Button
+                    style={{ marginLeft: 25, width: 35, height: 35 }}
+                    onClick={() => {this.setState({reset: !this.state.reset});this.refresher()}}
+                  >
+                    <i className="fa fa-refresh"></i>
+                  </Button>
+                </Col>
+
               </Row>
             </Col>
             {/* <Button onClick={() => this.setdate()}/> */}
-          </FormGroup>
+            </Row>
+        </Col>
 
+
+        <Col md="12" style={{marginTop: 30}}>
           <Card>
             <CardBody>
               <Table responsive hover>
@@ -523,9 +600,9 @@ class SittingRequest extends Component {
                     .reverse()
                     .map((item, index) => (
                       <React.Fragment key={index}>
-                        <tr onClick={() => this.openDropDown(item)}>
-                          <td>{item.id}</td>
-                          <td align="center">
+                        <tr>
+                          <td onClick={() => this.openDropDown(item)}>{item.id}</td>
+                          <td align="center" onClick={() => this.openDropDown(item)}>
                             {moment(item.sittingDate).format('DD-MM-YYYY')}
                             <br />
                             {moment(item.startTime, [
@@ -539,24 +616,27 @@ class SittingRequest extends Component {
                             ]).format('HH:mm')}
                           </td>
                           <td>
-                            <b>{item.user.nickname}</b>
+                            <b><a onClick={() => this.openParentInfo(item.user.id)} style={{cursor:'pointer'}}>
+                              {item.user.nickname}</a></b>
                           </td>
                           <td>
-                            {item.bsitter ? item.bsitter.nickname : 'N/A'}
+                            {item.bsitter ? 
+                            <a onClick={() => this.openUserInfo(item.bsitter.id)} style={{cursor:'pointer'}}>{item.bsitter.nickname}</a>
+                             : 'N/A'}
                           </td>
-                          <td>{item.sittingAddress}</td>
-                          <td>{formater(item.totalPrice)} VNĐ</td>
-                          <td>
+                          <td onClick={() => this.openDropDown(item)}>{item.sittingAddress}</td>
+                          <td onClick={() => this.openDropDown(item)}>{formater(item.totalPrice)} VNĐ</td>
+                          <td onClick={() => this.openDropDown(item)}>
                             {item.checkinTime
                               ? moment(item.checkinTime).format('HH:mm')
                               : 'N/A'}
                           </td>
-                          <td>
+                          <td onClick={() => this.openDropDown(item)}>
                             {item.checkoutTime
                               ? moment(item.checkoutTime).format('HH:mm')
                               : 'N/A'}
                           </td>
-                          <td>
+                          <td onClick={() => this.openDropDown(item)}>
                             <b
                               style={{
                                 color: this.textColorByStatus(item.status),
@@ -576,6 +656,14 @@ class SittingRequest extends Component {
             </CardBody>
           </Card>
         </Col>
+        {this.state.openInfo ? 
+          <Detail isOpen={true} userId={this.state.openInfoUser} closeMethod={this.openUserInfo}/> 
+          : null
+        }
+        {this.state.openParent ? 
+          <ParentDetail isOpen={true} userId={this.state.openInfoParent} closeMethod={this.openParentInfo}/> 
+          : null
+        }
       </Row>
     );
   }
@@ -644,6 +732,21 @@ class SittingRequest extends Component {
       </React.Fragment>
     );
   }
+
+  openUserInfo = (userId) => {
+    this.setState({ 
+      openInfo: !this.state.openInfo,
+      openInfoUser: userId
+    });
+  }
+
+  openParentInfo = (userId) => {
+    this.setState({ 
+      openParent: !this.state.openParent,
+      openInfoParent: userId
+    });
+  }
+
 
   tblInfo(user) {
     return (

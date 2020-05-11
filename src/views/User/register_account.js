@@ -18,6 +18,7 @@ import { read } from 'fs';
 import Api from '../../api/api_helper';
 import moment from 'moment';
 import {ToastsContainer, ToastsStore} from 'react-toasts';
+import ReactFileReader from 'react-file-reader';
 
 class RegisterAccount extends Component {
   constructor(props) {
@@ -93,6 +94,7 @@ class RegisterAccount extends Component {
     fileReader.onload = function(progressEvent) {
       var stringData = fileReader.result;
       profileArray = stringData.split('\n');
+      console.log(fileReader.result)
       if (profileArray.length == 7)
       this.setState({
         name: profileArray[0].split(': ')[1],
@@ -109,13 +111,13 @@ class RegisterAccount extends Component {
   };
   registerBabysitter = () => {
     let body = {
-      phoneNumber: this.state.phone,
-      email: this.state.email,
+      phoneNumber: this.state.phone.trim(),
+      email: this.state.email.trim(),
       password: '12341234',
-      nickname: this.state.name,
-      gender: this.state.gender,
+      nickname: this.state.name.trim(),
+      gender: this.state.gender.trim(),
       dateOfBirth: moment(this.state.dob, "DD-MM-YYYY").format('YYYY-MM-DD'),
-      address: this.state.address,
+      address: this.state.address.trim(),
       roleId: 3,
       active: 1,
       weeklySchedule: this.state.workingday,
@@ -136,25 +138,34 @@ class RegisterAccount extends Component {
 
   registerParent = () => {
     let child = [];
+    let check = true;
     this.state.names.forEach((item, index) => {
-      let temp = { image: this.state.images[index].toString(), name: this.state.names[index], 
-        age: this.state.ages[index]}
+      let temp = {};
+
+      if (this.state.images[index] && this.state.names[index] && this.state.ages[index]
+         && this.state.images[index]!='' && this.state.names[index]!='' && this.state.ages[index]!=''
+         && this.state.images[index]!=null && this.state.names[index]!=null && this.state.ages[index]!=null)
+        temp = { image: this.state.images[index].toString(), name: this.state.names[index], 
+        age: this.state.ages[index]} 
+      else {ToastsStore.error("Missing children information!"); check = false;}
+
       child.push(temp);
     });
     let body = {
-      phoneNumber: this.state.phone,
-      email: this.state.email,
+      phoneNumber: this.state.phone.trim(),
+      email: this.state.email.trim(),
       password: '12341234',
-      nickname: this.state.name,
-      gender: this.state.gender,
+      nickname: this.state.name.trim(),
+      gender: this.state.gender.trim(),
       dateOfBirth: moment(this.state.dob, "DD-MM-YYYY").format('YYYY-MM-DD'),
-      address: this.state.address,
+      address: this.state.address.trim(),
       roleId: 2,
       active: 1,
       image: this.state.image.toString(),
       children: child,
     }
-    Api.post('users/parentRegister', body).then(res => {
+    if (!this.state.image || this.state.image == '' ) {ToastsStore.error("Failed to register!"); check= false}
+    if (check) Api.post('users/parentRegister', body).then(res => {
       window.location.reload(false);
     }).catch(e => ToastsStore.error("Failed to register!"));
   }
@@ -169,15 +180,28 @@ class RegisterAccount extends Component {
   }
 
   changeHandlerImage = (evt) => {
-    evt.stopPropagation();
-    evt.preventDefault();
-    var file = evt.target.files[0];
-    var fileReader = new FileReader();
+    try {
+      evt.stopPropagation();
+      evt.preventDefault();
+      var file = evt.target.files[0];
+      var fileReader = new FileReader();
 
-    fileReader.onload = function(progressEvent) {
-      this.setState({image: progressEvent.target.result});
-    }.bind(this);
-    fileReader.readAsDataURL(file);
+      fileReader.onload = function(progressEvent) {
+        this.setState({image: progressEvent.target.result});
+      }.bind(this);
+      fileReader.readAsDataURL(file);
+    } catch (e){
+
+    }
+    // evt.stopPropagation();
+    // evt.preventDefault();
+    // var file = evt.target.files[0];
+    // var fileReader = new FileReader();
+
+    // fileReader.onload = function(progressEvent) {
+    //   this.setState({image: progressEvent.target.result});
+    // }.bind(this);
+    // fileReader.readAsDataURL(file);
     // fileReader.readAsText(file, 'UTF8-1');
   }
   changeChildName = (e) => {
@@ -192,11 +216,13 @@ class RegisterAccount extends Component {
     tmp[id] = e.target.value;
     this.setState({ages:tmp})
   }
+
   renderlist = (counter) => {
     let list = [], a=[1,2,3,4];
     for(let i=0; i < counter; i++) {
       list.push(
         <FormGroup row key={i} alignitems="right" style={{marginTop: 30}}>
+          <Row>
           <Col md="3"></Col>
           <Col md="3">
             <Input
@@ -206,7 +232,7 @@ class RegisterAccount extends Component {
               onChange={(e) => this.changeChildName(e)}
             />
           </Col>
-          <Col md="1">
+          <Col md="2">
             <Input
               type="text"
               id={i}
@@ -220,9 +246,11 @@ class RegisterAccount extends Component {
               id = {i}
               onChange={(e) => this.changeHandlerImages(e)}
             />
-            {this.state.images[i] != '' && this.state.images[i] &&
-            <img src={this.state.images[i]} width="150"/>}
           </Col>
+          <Col md="2">{this.state.images[i] && this.state.images[i] != '' && 
+            <img src={this.state.images[i]} width="50" height="50"/>}
+          </Col>
+          </Row>
         </FormGroup>
       )
     }
@@ -230,6 +258,8 @@ class RegisterAccount extends Component {
   }
 
   changeHandlerImages = (evt) => {
+    
+    try {
     evt.stopPropagation();
     evt.preventDefault();
     var file = evt.target.files[0];
@@ -240,6 +270,39 @@ class RegisterAccount extends Component {
       this.setState({images: this.state.images.concat(progressEvent.target.result)});
     }.bind(this);
     fileReader.readAsDataURL(file);
+    } catch (e) {
+      
+    }
+  }
+
+  handleFiles = file => {
+    try{
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        // Use reader.result
+        var stringData = reader.result;
+        let profileArray = [];
+        stringData.split('\n')[1] ?
+          profileArray = stringData.split('\n')[1].split(',') 
+          : ToastsStore.error("Invalid file!");
+          
+         if (profileArray.length == 10) 
+          this.setState({
+            name: profileArray[0],
+            gender: profileArray[1],
+            dob: profileArray[2],
+            email: profileArray[3],
+            phone: profileArray[4],
+            address: profileArray[5] + ',' + profileArray[6] + ',' 
+              + profileArray[7] + ',' + profileArray[8] + ',' + profileArray[9] ,
+            isFile: true,
+          })
+        else ToastsStore.error("Invalid file!");
+      }.bind(this)
+      reader.readAsText(file.fileList[0], 'utf-32');
+    } catch(e){
+      console.log(e)
+    }
   }
 
   render() {
@@ -272,10 +335,14 @@ class RegisterAccount extends Component {
                       <Label htmlFor="file-input">File input</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input
+                      {/* <Input
                         type="file"
                         onChange={(e) => this.changeHandler(e)}
-                      />
+                      /> */}
+                      
+                    <ReactFileReader handleFiles={this.handleFiles} fileTypes={[".csv"]} base64={true}>
+                      <button className='btn btn-primary'>Upload</button>
+                    </ReactFileReader>
                     </Col>
                   </FormGroup>
                 )}
@@ -290,6 +357,7 @@ class RegisterAccount extends Component {
                     <Col xs="9" md="6">
                       <Input
                         type="file"
+                        accept="image/x-png,image/gif,image/jpeg"
                         onChange={(e) => this.changeHandlerImage(e)}
                       />
                       {this.state.image != '' &&
@@ -494,11 +562,13 @@ class RegisterAccount extends Component {
 
               <CardFooter>
                 {this.state.accountType == 'Babysitter' && 
-                <Button type="submit" size="md" color="primary" onClick={()=>this.registerBabysitter()}>
+                <Button type="submit" size="md" color="primary" 
+                  onClick={()=> {if(window.confirm('Are you sure?')) this.registerBabysitter()}}>
                   <i className="fa fa-dot-circle-o"></i> Register
                 </Button>}
                 {this.state.accountType == 'Parent' && 
-                <Button type="submit" size="md" color="primary" onClick={()=>this.registerParent()}>
+                <Button type="submit" size="md" color="primary" 
+                  onClick={()=> {if(window.confirm('Are you sure?'))this.registerParent()}}>
                   <i className="fa fa-dot-circle-o"></i> Register
                 </Button>}
               </CardFooter></React.Fragment>)}

@@ -40,6 +40,7 @@ class Users extends Component {
       image: '',
       childName: '',
       childAge: '',
+      district: '',
     };
   }
 
@@ -60,6 +61,11 @@ class Users extends Component {
     let result = [];
     if (this.state.users) {
       this.state.users.map((item) => {
+
+        if (this.selectedDistrict() == ''|| 
+          item.address
+            .toUpperCase()
+            .indexOf(this.selectedDistrict().toUpperCase()) != -1)
         if (item.roleId == 2) 
         if (item.nickname.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1 || this.state.key == '')
           result.push(item);
@@ -67,6 +73,19 @@ class Users extends Component {
     }
     return result;
   }
+
+  selectedDistrict = () => {
+    if (this.state.district == 0) return '';
+    if (this.state.district == 1) return 'Q12';
+    if (this.state.district == 2) return 'Gò Vấp';
+    if (this.state.district == 3) return 'Q2';
+    if (this.state.district == 4) return 'Q3';
+    if (this.state.district == 5) return 'Q5';
+    if (this.state.district == 6) return 'Q10';
+    if (this.state.district == 7) return 'Tân Bình';
+    if (this.state.district == 8) return 'Tân Phú';
+    if (this.state.district == 9) return 'Phú Nhuận';
+  };
 
   saveUserInfo = (item) => {
     let info = {};
@@ -128,24 +147,55 @@ class Users extends Component {
     return (
       <Row>
         <ToastsContainer store={ToastsStore} position={"top_right"} lightBackground/>
-        <Col xs="12" lg="12">
-          <FormGroup>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>Search by Name</InputGroupText>
-              </InputGroupAddon>
-              <Input
-                placeholder="Enter keyword"
-                onChange={this.handleSearchInput}
-              />
-              <InputGroupAddon addonType="append">
-                <InputGroupText>
-                  <i className="fa fa-asterisk"></i>
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
-          </FormGroup>
+        <Col md="12">
+          <Row>
+            <Col md='5'>
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>Search by Name</InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Enter keyword"
+                    onChange={this.handleSearchInput}
+                  />
+                </InputGroup>
+              </FormGroup>
+            </Col>
 
+            <Col md='5'></Col>
+
+            <Col md="2">
+              <Row>
+              <Label style={{ paddingTop: 7, marginLeft: 20, marginRight: 10 }}>District</Label>
+            
+              <Input
+                    type="select"
+                    name="selectSm"
+                    id="SelectLm"
+                    bsSize="md"
+                    style={{ width: 120 }}
+                    onChange={(ev) =>
+                      this.setState({ district: ev.target.value })
+                    }
+                  >
+                    <option value="0">All</option>
+                    <option value="1">Q12</option>
+                    <option value="2">Gò Vấp</option>
+                    <option value="3">Q2</option>
+                    <option value="4">Q3</option>
+                    <option value="5">Q5</option>
+                    <option value="6">Q10</option>
+                    <option value="7">Tân Bình</option>
+                    <option value="8">Tân Phú</option>
+                    <option value="9">Phú Nhuận</option>
+              </Input>
+              </Row>
+            </Col>
+          </Row>
+        </Col>
+        
+        <Col md='12'>
           <Card>
             <CardBody>
               <Table responsive hover>
@@ -251,6 +301,9 @@ class Users extends Component {
               <InputGroup>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>{child.name}</InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>{child.age} tuổi</InputGroupText>
                 </InputGroupAddon>
                 <InputGroupText>
                   <img src={child.image } width="50" height="50"/>
@@ -364,13 +417,33 @@ class Users extends Component {
                 </FormGroup>
             
             <Row>
+            
             {(item.parent.children.length > 0) ? 
             item.parent.children.map(child => 
             <Col md='4' key={child.id}>
-            <FormGroup>
+              <Row style={{paddingTop:10, paddingBottom: 10}}>
+                <Col md='1'>
+                  <img src={child.image } width="50" height="50" />
+                </Col>
+                <Col md='7' style={{backgroundColor:'', paddingLeft: 20, marginRight:0, paddingTop: 5}}>
+                  <Col md='12'><b>{child.name}</b></Col>
+                  <Col md='12'>{child.age} tuổi</Col>
+                </Col>
+                <Col md='2' style={{backgroundColor:'', marginLeft: -50, paddingTop: 10}}>
+                <InputGroupAddon addonType="append" style={{cursor:'pointer'}}  
+                  onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>
+                  <Button type="submit" size="xs" color="danger" 
+                  onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>X</Button>  
+                </InputGroupAddon>
+                </Col>
+              </Row>
+            {/* <FormGroup>
               <InputGroup>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText  style={{width: 80}}>{child.name}</InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText >{child.age} years</InputGroupText>
                 </InputGroupAddon>
                 <InputGroupText>
                   <img src={child.image } width="50" height="50"/>
@@ -379,14 +452,10 @@ class Users extends Component {
                   onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>
                   <Button type="submit" size="xs" color="danger" 
                   onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>X</Button>  
-                  {/* <InputGroupText>
-                    <i className="fa fa-remove"></i>
-                    <Button type="submit" size="xs" color="danger" 
-                  onClick={() => {if(window.confirm('Are you sure to remove this child?')){this.deleteChild(child.id)};}}>X</Button>
-                  </InputGroupText> */}
                 </InputGroupAddon>
               </InputGroup>
-            </FormGroup></Col>)
+            </FormGroup> */}
+            </Col>)
             : <FormGroup>No children added</FormGroup>}
             </Row>
             {this.state.adding &&
@@ -463,7 +532,6 @@ class Users extends Component {
     }.bind(this);
     fileReader.readAsDataURL(file);
   }
-
 }
 
 export default Users;

@@ -18,21 +18,22 @@ import Popup from 'reactjs-popup';
 import Api from '../../../api/api_helper';
 import moment from 'moment';
 
-class Detail extends Component {
+class ParentDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userId: this.props.userId,
       isOpen: this.props.isOpen,
       user: {},
-      fbs: [],
+      srs: [],
     };
   }
 
   componentWillMount() {
     Api.get('users/' + this.state.userId).then((res) => {
       this.setState({ user: res });
-      Api.get('feedback/getAllFeedbackByUserId/' + res.id).then(res => this.setState({fbs: res}));
+      Api.post('sittingRequests/listParent/', {userId: this.state.userId})
+        .then(res => this.setState({srs: res}))
     });
   }
 
@@ -46,7 +47,7 @@ class Detail extends Component {
         <ModalBody>
           <Row>
             <Col lg="7">{this.tblInfo()}</Col>
-            <Col lg="5">{this.tblSkillCert()}</Col>
+            <Col lg="5"></Col>
             <Col md='12'>
               <h4>Recent activities</h4>
             </Col>
@@ -63,12 +64,14 @@ class Detail extends Component {
   }
 
   tblFeedback() {
-    const fbs = this.state.fbs;
+    const srs = this.state.srs;
+    let countFb = 0;
     
     return (
       <Table responsive borderless >
         <thead>
           <tr>
+            <th width='0'></th>
             <th width='120'>Date</th>
             <th>Reported</th>
             <th>Rating</th>
@@ -76,21 +79,22 @@ class Detail extends Component {
           </tr>
         </thead>
         <tbody>
-          {fbs.length != 0 ? fbs.map(fb => fb.reporter &&
+          {srs.length != 0 ? srs.map(sr => sr.feedbacks && sr.feedbacks.map(fb => !fb.reporter &&
             <tr key={fb.id}>
+              <td style={{color:'white'}}>{countFb++}</td>
               <td>
-                <b>{moment(fb.sitting.sittingDate).format('DD-MM-YYYY')}</b>
+                <b>{moment(sr.sittingDate).format('DD-MM-YYYY')}</b>
               </td>
-              <td align='center'>{fb.isReport && fb.reporter && 
+              <td align='center'>{fb.isReport &&
                 <i className="fa fa-close" style={{color:'red'}}/>}
               </td>
               <td align='center'>{!fb.isReport && 
                 <span>{fb.rating}<i className='fa fa-star' style={{color:'#fcdb03'}}/></span>}
               </td>
-              <td>{fb.description}</td>
-            </tr>) : <tr style={{color:'#bebebe'}}><td align='center' colSpan='100%'>No feedback from babysitter</td></tr>
+              <td>{fb.description}</td> 
+            </tr>)) : <tr style={{color:'#bebebe'}}><td align='center' colSpan='100%'>No feedback from babysitter</td></tr>
           }
-          
+          {countFb == 0 ? <tr style={{color:'#bebebe'}}><td align='center' colSpan='100%'>No feedback from babysitter</td></tr> : null}
         </tbody>
       </Table>
     );
@@ -137,63 +141,6 @@ class Detail extends Component {
     );
   }
 
-  tblSkillCert() {
-    const user = this.state.user;
-    return (
-      <Row style={{marginTop: 20}}>
-        <Col md="12">
-          <Row>
-            <Col md="4">
-              <b> <i className="cui-list icons mt-4"></i>&nbsp;Skills:</b>
-            </Col>
-            <Col md="8">
-              { user.sitterSkills && 
-                (user.sitterSkills.length == 0 ?
-                <Row><p style={{color:'#bebebe', paddingLeft: 10}}>This sitter has no skill</p></Row> : 
-                <Row>
-                  {
-                    user.sitterSkills.map(skill => 
-                        <Col md='12' key={skill.skillId} style={{color: '#4dbd74'}}>
-                          <i className="cui-check icons mt-4"></i>&nbsp;
-                          {skill.skill.vname}
-                        </Col>
-                    )
-                  }
-                </Row>)
-              }
-              
-            </Col>
-          </Row>
-        </Col>
-
-
-        <Col md="12" style={{marginTop:10, paddingTop: 10}}>
-          <Row>
-            <Col md="4">
-            <b> <i className="cui-list icons mt-4"></i>&nbsp;Certificates:</b>
-            </Col>
-            <Col md="8">
-              { user.sitterCerts && 
-                (user.sitterCerts.length == 0 ?
-                <Row><p style={{color:'#bebebe', paddingLeft: 10}}>This sitter has no certificate</p></Row> : 
-                <Row>
-                  {
-                    user.sitterCerts.map(skill => 
-                        <Col md='12' key={skill.certId} style={{color: '#4dbd74'}}>
-                          <i className="cui-check icons mt-4"></i>&nbsp;
-                          {skill.cert.vname}
-                        </Col>
-                    )
-                  }
-                </Row>)
-              }
-              
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    );
-  }
 }
 
-export default Detail;
+export default ParentDetail;

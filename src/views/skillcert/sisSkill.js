@@ -9,6 +9,7 @@ import {
   ToastsContainerPosition,
   ToastContainer,
 } from 'react-toasts';
+import Detail from '../User/babysitter/detail';
 
 class Tables extends Component {
   constructor(props) {
@@ -24,6 +25,10 @@ class Tables extends Component {
       open: null,
       key2:'',
       key1:'',
+      keyskill: '',
+      openName: '',
+      openInfo: false,
+      openInfoUser: null,
     };
   }
 
@@ -81,6 +86,12 @@ class Tables extends Component {
           <Col lg="4">
             <h1>Current skills in system</h1>
             <Card>
+              <CardHeader>
+                  <Input
+                    placeholder="Code name/Name of skill"
+                    onChange={(e) => this.setState({keyskill: e.target.value})}
+                  />
+              </CardHeader>
               <CardBody>
                 <Table responsive hover>
                   <thead>
@@ -91,13 +102,13 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.skills == null ? 
+                  {this.skillFilter(this.state.skills).length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No skill added</td></tr> 
-                  : this.state.skills.map(item => 
+                  : this.skillFilter(this.state.skills).map(item => 
                     <React.Fragment key={item.id}>
                     <tr onClick={() => 
                       {
-                        this.setState({open: item.id});
+                        this.setState({open: item.id, openName: item.vname});
                         this.getUsers();
                       }}
                       style={ this.state.open == item.id ? { backgroundColor:"#c8ced3"}: null}
@@ -139,7 +150,7 @@ class Tables extends Component {
         <Card>
           <CardHeader>{this.state.sittersNotIn.length} sitter
               {this.state.sittersNotIn.length == 1 ? ' doesn\'t have ' : 's don\'t have '} 
-              '{this.state.skills[this.state.open - 1].vname}' skill
+              '{this.state.openName}' skill
           </CardHeader>
           <CardBody>
             <Input
@@ -168,7 +179,9 @@ class Tables extends Component {
                   (<React.Fragment key={item.id}>
                   <tr>
                     <td colSpan='4'>
-                      <b>{item.nickname}</b>
+                      <b><a onClick={() => this.openUserInfo(item.id)} style={{cursor:'pointer'}}>
+                        {item.nickname}
+                      </a></b>
                     </td>
 
                     <td colSpan='4'>{item.phoneNumber}</td>
@@ -194,8 +207,8 @@ class Tables extends Component {
         <h1>&nbsp;</h1>
         <Card>
           <CardHeader>{this.state.sittersIn.length} sitter
-              {this.state.sittersIn.length == 0 ? ' has' : 's have'} 
-              &nbsp;'{this.state.skills[this.state.open - 1].vname}' skill
+              {this.state.sittersIn.length == 0 ? ' has' : 's have'} {this.state.open}
+              &nbsp;'{this.state.openName}' skill
           </CardHeader>
           <CardBody>
             <Input
@@ -233,7 +246,9 @@ class Tables extends Component {
                     </td>
 
                     <td colSpan='4'>
-                      <b>{item.nickname}</b>
+                      <b><a onClick={() => this.openUserInfo(item.id)} style={{cursor:'pointer'}}>
+                        {item.nickname}
+                      </a></b>
                     </td>
 
                     <td colSpan='4'>{item.phoneNumber}</td>
@@ -245,6 +260,10 @@ class Tables extends Component {
           </CardBody>
         </Card>
       </Col>
+      {this.state.openInfo ? 
+          <Detail isOpen={true} userId={this.state.openInfoUser} closeMethod={this.openUserInfo}/> 
+          : null
+      }
       </React.Fragment>
     )
   }
@@ -266,6 +285,32 @@ class Tables extends Component {
       });
     }
     return result;
+  }
+
+  skillFilter(list) {
+    let result = [];
+    const searchKey = this.state.keyskill;
+    if (list) {
+      list.map((item) => {
+        if (
+          item.name
+            .toUpperCase()
+            .indexOf(searchKey.toUpperCase()) != -1 ||
+          item.vname
+            .toUpperCase()
+            .indexOf(searchKey.toUpperCase()) != -1
+        )
+        result.push(item);
+      });
+    }
+    return result;
+  }
+
+  openUserInfo = (userId) => {
+    this.setState({ 
+      openInfo: !this.state.openInfo,
+      openInfoUser: userId
+    });
   }
 }
 

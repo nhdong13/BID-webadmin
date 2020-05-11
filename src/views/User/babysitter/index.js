@@ -17,6 +17,8 @@ import {
 import Api from '../../../api/api_helper';
 import Popup from 'reactjs-popup';
 import {ToastsContainer, ToastsStore} from 'react-toasts';
+import Detail from './detail';
+import moment from 'moment'
 
 class Users extends Component {
   constructor(props) {
@@ -27,6 +29,8 @@ class Users extends Component {
       key: '',
       maxNumOfChildren: 0,
       minAgeOfChildren: 0,
+      district: '',
+      fbs: [],
     };
   }
 
@@ -58,6 +62,10 @@ class Users extends Component {
     let result = [];
     if (this.state.users) {
       this.state.users.map((item) => {
+        if (this.selectedDistrict() == ''|| 
+          item.address
+            .toUpperCase()
+            .indexOf(this.selectedDistrict().toUpperCase()) != -1)
         if (item.roleId == 3)
           if (item.nickname.toUpperCase().indexOf(this.state.key.toUpperCase()) != -1 || this.state.key == '')
             result.push(item);
@@ -141,6 +149,19 @@ class Users extends Component {
     window.location.reload(false);
   }
 
+  selectedDistrict = () => {
+    if (this.state.district == 0) return '';
+    if (this.state.district == 1) return 'Q12';
+    if (this.state.district == 2) return 'Gò Vấp';
+    if (this.state.district == 3) return 'Q2';
+    if (this.state.district == 4) return 'Q3';
+    if (this.state.district == 5) return 'Q5';
+    if (this.state.district == 6) return 'Q10';
+    if (this.state.district == 7) return 'Tân Bình';
+    if (this.state.district == 8) return 'Tân Phú';
+    if (this.state.district == 9) return 'Phú Nhuận';
+  };
+
   weeklyScheduleString = (str) => {
     let tmp = '';
     if (str.indexOf('MON') != -1) tmp += 'T2 ';
@@ -157,19 +178,56 @@ class Users extends Component {
     return (
       <Row>
         <ToastsContainer store={ToastsStore} position={"top_right"} lightBackground/>
-        <Col xs="12" lg="12">
-          <FormGroup>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>Search by Name</InputGroupText>
-              </InputGroupAddon>
-              <Input
-                placeholder="Enter keyword"
-                onChange={this.handleSearchInput}
-              />
-            </InputGroup>
-          </FormGroup>
+        <Col md="12">
+          <Row>
+            <Col md='5'>
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>Search by Name</InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Enter keyword"
+                    onChange={this.handleSearchInput}
+                  />
+                </InputGroup>
+              </FormGroup>
+            </Col>
 
+            <Col md='5'></Col>
+
+            <Col md="2">
+              <Row>
+              <Label style={{ paddingTop: 7, marginLeft: 20, marginRight: 10 }}>District</Label>
+            
+              <Input
+                    type="select"
+                    name="selectSm"
+                    id="SelectLm"
+                    bsSize="md"
+                    style={{ width: 120 }}
+                    onChange={(ev) =>
+                      this.setState({ district: ev.target.value })
+                    }
+                  >
+                    <option value="0">All</option>
+                    <option value="1">Q12</option>
+                    <option value="2">Gò Vấp</option>
+                    <option value="3">Q2</option>
+                    <option value="4">Q3</option>
+                    <option value="5">Q5</option>
+                    <option value="6">Q10</option>
+                    <option value="7">Tân Bình</option>
+                    <option value="8">Tân Phú</option>
+                    <option value="9">Phú Nhuận</option>
+              </Input>
+              </Row>
+            </Col>
+          </Row>
+        </Col>
+
+
+        <Col md='12'>
           <Card>
             <CardBody>
               <Table responsive hover>
@@ -202,9 +260,9 @@ class Users extends Component {
                         <td>{item.address}</td>
                         <td>{item.active ? <b style={({color: 'green'})}>Active</b> 
                         : <b style={({color: 'red'})}>Banned</b>}</td>
-                        <td>
+                        <td onClick={() => this.loadFeedback(item)}>
                         <Popup trigger={<button className="btn btn-pill btn-block btn-info">Edit</button>} modal>
-                        {this.openList(item)}
+                        <div style={{height: '700px', display: 'block', overflowY: 'scroll'}} >{this.openList(item)}</div>
                         </Popup>
                         </td>
                       </tr>
@@ -340,6 +398,7 @@ class Users extends Component {
   }
 
   openList(item) {
+    
     return (
       <div style={({margin:50})}>
         <h1>{item.nickname}</h1>
@@ -474,6 +533,12 @@ class Users extends Component {
             </InputGroup>
           </FormGroup>
 
+          {this.tblSkillCert(item)}
+          <div style={{height: '300px', display: 'block', overflowY: 'scroll'}}>
+            <h5>Recent activities</h5>
+            {this.tblFeedback(item)}
+          </div>
+
           <FormGroup className="form-actions" align="center">
             <Button
               type="submit"
@@ -511,6 +576,104 @@ class Users extends Component {
           </FormGroup>
         </div>
     );
+  }
+
+  tblSkillCert(user) {
+    return (
+      <Row style={{marginTop: 20}}>
+        <Col md="6">
+          <Row>
+            <Col md="4">
+              <b> <i className="cui-list icons mt-4"></i>&nbsp;Skills:</b>
+            </Col>
+            <Col md="8">
+              { user && user.sitterSkills && 
+                (user.sitterSkills.length == 0 ?
+                <Row><p style={{color:'#bebebe', paddingLeft: 10}}>This sitter has no skill</p></Row> : 
+                <Row>
+                  {
+                    user.sitterSkills.map(skill => 
+                        <Col md='12' key={skill.skillId} style={{color: '#4dbd74'}}>
+                          <i className="cui-check icons mt-4"></i>&nbsp;
+                          {skill.skill.vname}
+                        </Col>
+                    )
+                  }
+                </Row>)
+              }
+              
+            </Col>
+          </Row>
+        </Col>
+
+
+        <Col md="6" 
+        // style={{marginTop:10, paddingTop: 10}}
+        >
+          <Row>
+            <Col md="4">
+            <b> <i className="cui-list icons mt-4"></i>&nbsp;Certificate</b>
+            </Col>
+            <Col md="8">
+              { user.sitterCerts && 
+                (user.sitterCerts.length == 0 ?
+                <Row><p style={{color:'#bebebe', paddingLeft: 10}}>This sitter has no certificate</p></Row> : 
+                <Row>
+                  {
+                    user.sitterCerts.map(skill => 
+                        <Col md='12' key={skill.certId} style={{color: '#4dbd74'}}>
+                          <i className="cui-check icons mt-4"></i>&nbsp;
+                          {skill.cert.vname}
+                        </Col>
+                    )
+                  }
+                </Row>)
+              }
+              
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    );
+  }
+
+  tblFeedback(user) {
+    const fbs = this.state.fbs;
+     
+    return (
+      <Table responsive borderless>
+        <thead>
+          <tr>
+            <th width='120'>Date</th>
+            <th>Reported</th>
+            <th>Rating</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody style={{height:200}}>
+          {fbs.length != 0 ? fbs.map(fb => fb.reporter &&
+            <tr key={fb.id}>
+              <td>
+                <b>{moment(fb.sitting.sittingDate).format('DD-MM-YYYY')}</b>
+              </td>
+              <td align='center'>{fb.isReport && fb.reporter && 
+                <i className="fa fa-close" style={{color:'red'}}/>}
+              </td>
+              <td align='center'>{!fb.isReport && 
+                <span>{fb.rating}<i className='fa fa-star' style={{color:'#fcdb03'}}/></span>}
+              </td>
+              <td>{fb.description}</td>
+            </tr>): <tr style={{color:'#bebebe'}}><td align='center' colSpan='100%'>No feedback yet</td></tr>
+          }
+          
+        </tbody>
+      </Table>
+    );
+  }
+
+  loadFeedback = (user) => {
+    // console.log(user)
+    Api.get('feedback/getAllFeedbackByUserId/' + user.id).then(res => this.setState({fbs: res}))
   }
 }
 

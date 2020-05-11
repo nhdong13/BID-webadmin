@@ -25,6 +25,7 @@ class Tables extends Component {
       isActive: null,
       reset: true,
       open: null,
+      key: '',
     };
   }
 
@@ -33,6 +34,10 @@ class Tables extends Component {
   }
 
   saveSkill = () => {
+    if (this.checkDuplicate(this.state.newSkillName)) {
+      ToastsStore.error('Failed to add new skill!');
+      return;
+    }
     if (!this.state.newSkillName || !this.state.newSkillVname || !this.state.newSkillPoint) return;
     let info = {};
     info.name = this.state.newSkillName;
@@ -41,11 +46,11 @@ class Tables extends Component {
     info.active = true;
 
     Api.post('skills', info).then((res) => {
-      if (res.name == info.name) {
-        ToastsStore.success('Successfully saved!');
-      } else {
-        ToastsStore.error('Failed to save! Try again');
-      }
+      // if (res.name == info.name) {
+      //   ToastsStore.success('Successfully saved!');
+      // } else {
+      //   ToastsStore.error('Failed to save! Try again');
+      // }
       this.componentDidMount();
       window.location.reload(false);
     });
@@ -95,6 +100,12 @@ class Tables extends Component {
           <Col lg="8">
             <h1>Current skills in system</h1>
             <Card>
+              <CardHeader>
+                <Input
+                  placeholder="Code name/Name of skill"
+                  onChange={(e) => this.setState({key: e.target.value})}
+                />
+              </CardHeader>
               <CardBody>
                 <Table responsive hover>
                   <thead>
@@ -107,9 +118,9 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.skills == null ? 
+                  {this.listFilter( this.state.skills).length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No skill added</td></tr> 
-                  : this.state.skills.map(item => 
+                  : this.listFilter( this.state.skills).map(item => 
                     <React.Fragment key={item.id}><tr onClick={() => this.openDropDown(item)}>
                     <td>{item.id}</td>
                     <td>{item.name}</td>
@@ -140,7 +151,8 @@ class Tables extends Component {
                         <Input
                           type="text"
                           placeholder="Skill code"
-                          onChange={(e) => this.setState({newSkillName: e.target.value})}
+                          className={this.checkDuplicate(this.state.newSkillName) ? "is-invalid" : null}
+                          onChange={(e) => this.setState({newSkillName: e.target.value.trim()})}
                         />
                     </td></tr>
 
@@ -150,7 +162,7 @@ class Tables extends Component {
                         <Input
                           type="text"
                           placeholder="Skill Name"
-                          onChange={(e) => this.setState({newSkillVname: e.target.value})}
+                          onChange={(e) => this.setState({newSkillVname: e.target.value.trim()})}
                         />
                     </td></tr>
                     <tr><td>
@@ -159,7 +171,7 @@ class Tables extends Component {
                         <Input
                           type="text"
                           placeholder="Point"
-                          onChange={(e) => this.setState({newSkillPoint: e.target.value})}
+                          onChange={(e) => this.setState({newSkillPoint: e.target.value.trim()})}
                         />
                     </td></tr>
                     <tr><td colSpan='100%' align='center'>
@@ -254,7 +266,7 @@ class Tables extends Component {
         Update
       </Button>
 
-      <Button
+      {/* <Button
         type="submit"
         size="md"
         style={{marginLeft: 30}}
@@ -262,10 +274,39 @@ class Tables extends Component {
         onClick={() => this.destroySkill(item.id)}
       >
         Destroy
-      </Button>
+      </Button> */}
       </td></tr>
       </React.Fragment>
     )
+  }
+
+  listFilter(list) {
+    let result = [];
+    const searchKey = this.state.key;
+    if (list) {
+      list.map((item) => {
+        if (
+          item.name
+            .toUpperCase()
+            .indexOf(searchKey.toUpperCase()) != -1 ||
+          item.vname
+            .toUpperCase()
+            .indexOf(searchKey.toUpperCase()) != -1
+        )
+        result.push(item);
+      });
+    }
+    return result;
+  }
+
+  checkDuplicate = (str) => {
+    let result = false;
+    const skills = this.state.skills;
+    if (str == null) {result = false;return;}
+    skills.map(item => {
+      if (item.name.toUpperCase() == str.toUpperCase()) result = true;
+    })
+    return result;
   }
 }
 

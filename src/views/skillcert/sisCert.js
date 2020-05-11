@@ -9,6 +9,7 @@ import {
   ToastsContainerPosition,
   ToastContainer,
 } from 'react-toasts';
+import Detail from '../User/babysitter/detail';
 
 class Tables extends Component {
   constructor(props) {
@@ -24,6 +25,10 @@ class Tables extends Component {
       open: null,
       key1: '',
       key2: '',
+      keyCert: '',
+      openName: '',
+      openInfo: false,
+      openInfoUser: null,
     };
   }
 
@@ -81,6 +86,12 @@ class Tables extends Component {
           <Col lg="4">
             <h1>Current certificates in system</h1>
             <Card>
+              <CardHeader>
+                <Input
+                  placeholder="Code name/Name of certificate"
+                  onChange={(e) => this.setState({keyCert: e.target.value})}
+                />
+              </CardHeader>
               <CardBody>
                 <Table responsive hover>
                   <thead>
@@ -91,13 +102,13 @@ class Tables extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {this.state.certs == null ? 
+                  {this.certFilter(this.state.certs).length == 0 ? 
                   <tr style={{textAlign: "center", color:"gray"}}><td colSpan="100%">No certificate added</td></tr> 
-                  : this.state.certs.map(item => 
+                  : this.certFilter(this.state.certs).map(item => 
                     <React.Fragment key={item.id}>
                     <tr onClick={() => 
                       {
-                        this.setState({open: item.id});
+                        this.setState({open: item.id, openName: item.vname});
                         this.getUsers();
                       }}
                       style={ this.state.open == item.id ? { backgroundColor:"#c8ced3"}: null}
@@ -139,7 +150,7 @@ class Tables extends Component {
         <Card>
           <CardHeader>{this.state.sittersNotIn.length} sitter
               {this.state.sittersNotIn.length == 1 ? ' doesn\'t have ' : 's don\'t have '} 
-              '{this.state.certs[this.state.open - 1].vname}' certificate
+              '{this.state.openName}' certificate
           </CardHeader>
           <CardBody>
             <Input
@@ -168,7 +179,9 @@ class Tables extends Component {
                   (<React.Fragment key={item.id}>
                   <tr>
                     <td colSpan='4'>
-                      <b>{item.nickname}</b>
+                      <b><a onClick={() => this.openUserInfo(item.id)} style={{cursor:'pointer'}}>
+                        {item.nickname}
+                      </a></b>
                     </td>
 
                     <td colSpan='4'>{item.phoneNumber}</td>
@@ -195,7 +208,7 @@ class Tables extends Component {
         <Card>
           <CardHeader>{this.state.sittersIn.length} sitter
               {this.state.sittersIn.length == 0 ? ' has' : 's have'} 
-              &nbsp;'{this.state.certs[this.state.open - 1].vname}' certificate
+              &nbsp;'{this.state.openName}' certificate
           </CardHeader>
           <CardBody>
             <Input
@@ -233,7 +246,9 @@ class Tables extends Component {
                     </td>
 
                     <td colSpan='4'>
-                      <b>{item.nickname}</b>
+                      <b><a onClick={() => this.openUserInfo(item.id)} style={{cursor:'pointer'}}>
+                        {item.nickname}
+                      </a></b>
                     </td>
 
                     <td colSpan='4'>{item.phoneNumber}</td>
@@ -245,6 +260,11 @@ class Tables extends Component {
           </CardBody>
         </Card>
       </Col>
+
+      {this.state.openInfo ? 
+          <Detail isOpen={true} userId={this.state.openInfoUser} closeMethod={this.openUserInfo}/> 
+          : null
+      }
       </React.Fragment>
     )
   }
@@ -266,6 +286,32 @@ class Tables extends Component {
       });
     }
     return result;
+  }
+
+  certFilter(list) {
+    let result = [];
+    const searchKey = this.state.keyCert;
+    if (list) {
+      list.map((item) => {
+        if (
+          item.name
+            .toUpperCase()
+            .indexOf(searchKey.toUpperCase()) != -1 ||
+          item.vname
+            .toUpperCase()
+            .indexOf(searchKey.toUpperCase()) != -1
+        )
+        result.push(item);
+      });
+    }
+    return result;
+  }
+
+  openUserInfo = (userId) => {
+    this.setState({ 
+      openInfo: !this.state.openInfo,
+      openInfoUser: userId
+    });
   }
 }
 
