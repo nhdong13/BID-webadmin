@@ -44,6 +44,8 @@ class Configuration extends Component {
       updatedPrice: [],
       updatedHoliday: 0,
       updatedOvertime: 0,
+      skill: 0,
+      cert: 0,
     };
   }
 
@@ -75,6 +77,8 @@ class Configuration extends Component {
         UNDER_6_YEARS: res[1].baseAmount,
         UNDER_18_MONTHS: res[2].baseAmount,
         UNDER_6_MONTHS: res[3].baseAmount,
+        skill: res[4].baseAmount,
+        cert: res[5].baseAmount,
       });
     });
     // console.log(res));
@@ -115,8 +119,10 @@ class Configuration extends Component {
       this.state.UNDER_6_YEARS,
       this.state.UNDER_18_MONTHS,
       this.state.UNDER_6_MONTHS,
+      this.state.skill,
+      this.state.cert,
     ];
-    for (let i = 1; i < 5; i++) {
+    for (let i = 1; i < 7; i++) {
       let pricingsBody = { baseAmount: tmp[i - 1] };
       await Api.put('pricings/' + i.toString(), pricingsBody)
         .then((res) => {})
@@ -362,6 +368,28 @@ class Configuration extends Component {
                       placeholder="input ..."
                       id="UNDER_6_MONTHS"
                       value={this.state.UNDER_6_MONTHS}
+                      onChange={this.handleSearchInput}
+                    />
+                  </InputGroup>
+                  <InputGroup style={{ marginTop: 10 }}>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText style={{width: 200}}>SKILL</InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="input ..."
+                      id="skill"
+                      value={this.state.skill}
+                      onChange={this.handleSearchInput}
+                    />
+                  </InputGroup>
+                  <InputGroup style={{ marginTop: 10 }}>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText style={{width: 200}}>CERT</InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="input ..."
+                      id="cert"
+                      value={this.state.cert}
                       onChange={this.handleSearchInput}
                     />
                   </InputGroup>
