@@ -141,7 +141,7 @@ class Users extends Component {
 
   logoutAccount = (id) => {
     let body = {
-      firstTime: true,
+      firstTime: false,
     }
     Api.put('users/' + id.toString(), body).catch(e => {
       ToastsStore.error("Failed!");
